@@ -1,0 +1,10 @@
+GET http://localhost:8080/bank
+
+###
+POST http://localhost:8080/bank
+Content-Type: application/json
+
+{
+  "name": "Sber Bank",
+  "address": "Adelya Kutuya"
+}

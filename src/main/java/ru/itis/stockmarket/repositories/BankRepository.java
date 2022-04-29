@@ -1,7 +1,6 @@
 package ru.itis.stockmarket.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 import ru.itis.stockmarket.models.Bank;
 
 /**
@@ -14,6 +13,6 @@ import ru.itis.stockmarket.models.Bank;
  * <p>
  * Desc:
  */
-public interface BankRepository extends CrudRepository<Bank, Long> {
+public interface BankRepository extends JpaRepository<Bank, Long> {
 
 }

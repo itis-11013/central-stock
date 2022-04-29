@@ -1,8 +1,9 @@
 package ru.itis.stockmarket.services;
 
-import org.springframework.stereotype.Service;
+import ru.itis.stockmarket.dtos.BankDto;
 import ru.itis.stockmarket.models.Bank;
-import ru.itis.stockmarket.repositories.BankRepository;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA
@@ -14,16 +15,9 @@ import ru.itis.stockmarket.repositories.BankRepository;
  * <p>
  * Desc:
  */
-@Service
-public class BankService {
 
-    private final BankRepository bankRepository;
+public interface BankService {
+    Bank createBank(Bank bank);
 
-    public BankService(BankRepository bankRepository) {
-        this.bankRepository = bankRepository;
-    }
-
-    public Bank createBank() {
-        return this.bankRepository.save(new Bank());
-    }
+    List<Bank> getAllBanks();
 }

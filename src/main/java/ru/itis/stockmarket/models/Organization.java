@@ -21,5 +21,6 @@ public class Organization {
     private String address;
 
     @ManyToOne
+    @JoinColumn(name = "country_id")
     private Country country;
 }
