@@ -1,8 +1,7 @@
 package ru.itis.stockmarket.services;
 
-import ru.itis.stockmarket.dtos.BankDto;
-import ru.itis.stockmarket.models.Bank;
-
+import ru.itis.stockmarket.dtos.BankRequestDto;
+import ru.itis.stockmarket.dtos.BankResponseDto;
 import java.util.List;
 
 /**
@@ -17,7 +16,14 @@ import java.util.List;
  */
 
 public interface BankService {
-    Bank createBank(Bank bank);
+    BankResponseDto createBank(BankRequestDto bank);
 
-    List<Bank> getAllBanks();
+    BankResponseDto updateBank(Long id, BankRequestDto bank);
+
+    BankResponseDto getBankWithId(Long id);
+
+    List<BankResponseDto> getAllBanks();
+
+    void deleteBankWithId(Long id);
+
 }

@@ -2,6 +2,7 @@ package ru.itis.stockmarket.models;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -18,9 +19,12 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "bank")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
-@RequiredArgsConstructor
+@DynamicUpdate
 public class Bank {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bankGen")
