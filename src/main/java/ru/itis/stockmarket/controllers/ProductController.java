@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.itis.stockmarket.dtos.ProductForm;
+import ru.itis.stockmarket.dtos.ProductRequestDto;
 import ru.itis.stockmarket.models.Product;
 import ru.itis.stockmarket.services.ProductService;
 
@@ -21,7 +21,7 @@ public class ProductController {
     }
 
     @PostMapping(path = "/list")
-    ResponseEntity<List<Product>> getProductList(ProductForm productForm) {
+    ResponseEntity<List<Product>> getProductList(ProductRequestDto product) {
         return null;
     }
 

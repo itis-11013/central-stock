@@ -1,7 +1,7 @@
 package ru.itis.stockmarket.services;
 
 import org.springframework.stereotype.Service;
-import ru.itis.stockmarket.dtos.ProductForm;
+import ru.itis.stockmarket.dtos.ProductRequestDto;
 import ru.itis.stockmarket.models.Product;
 import ru.itis.stockmarket.repositories.ProductRepository;
 import java.util.List;
@@ -17,7 +17,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProducts(ProductForm productForm) {
+    public List<Product> getProducts(ProductRequestDto productForm) {
         return null;
     }
 }

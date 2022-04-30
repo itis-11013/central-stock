@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ProductForm {
+public class ProductRequestDto {
    private String code;
    private String count;
 }
