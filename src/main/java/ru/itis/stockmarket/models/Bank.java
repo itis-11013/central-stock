@@ -21,10 +21,12 @@ import java.util.UUID;
 @Data
 public class Bank {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bankGen")
+    @SequenceGenerator(name = "bankGen", sequenceName = "bank_seq", allocationSize = 1)
     private Long id;
+    private String name;
+    private String address;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(updatable = false, nullable = false, unique = true)
-    private UUID innerId;
+    @ManyToOne
+    private Country country;
 }
