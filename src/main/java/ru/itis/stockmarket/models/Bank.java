@@ -30,6 +30,8 @@ public class Bank {
     private String name;
     private String address;
 
+    private String url;
+
     @ManyToOne
     @JoinColumn(name = "country_id")
     private Country country;
