@@ -1,14 +1,16 @@
 package ru.itis.stockmarket.controllers;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+import org.hibernate.Session;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.itis.stockmarket.dtos.BankRequestDto;
+import ru.itis.stockmarket.dtos.BankResponseDto;
 import ru.itis.stockmarket.dtos.GeneralMessage;
 import ru.itis.stockmarket.dtos.Status;
 import ru.itis.stockmarket.models.Bank;
 import ru.itis.stockmarket.services.BankService;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA
@@ -31,13 +33,42 @@ public class BankController {
         this.bankService = bankService;
     }
 
-    @PostMapping()
-    Object createBank() {
-       Bank bank = this.bankService.createBank();
-       if (bank == null) {
-           return GeneralMessage.builder().status(Status.failure).description("Failed to create new bank");
-       } else {
-           return bank;
-       }
+    @PostMapping
+    ResponseEntity<BankResponseDto> createBank(@RequestBody BankRequestDto bank) {
+        return ResponseEntity.ok(this.bankService.createBank(bank));
+    }
+
+    @GetMapping
+    ResponseEntity<List<BankResponseDto>> getAllBanks() {
+        return ResponseEntity.ok(this.bankService.getAllBanks());
+    }
+
+    @GetMapping("/{id}")
+    ResponseEntity<BankResponseDto> getBankWithId(@PathVariable Long id) {
+        return ResponseEntity.ok(this.bankService.getBankWithId(id));
+    }
+
+    @DeleteMapping("/{id}")
+    GeneralMessage deleteBankWithId(@PathVariable Long id) {
+        try {
+            this.bankService.deleteBankWithId(id);
+            return GeneralMessage.builder()
+                    .description("Successfully deleted bank")
+                    .data("OK")
+                    .status(Status.success)
+                    .build();
+        } catch(Exception e) {
+            return GeneralMessage.builder()
+                    .description("An error occured while deleting bank")
+                    .data("Error")
+                    .status(Status.failure)
+                    .build();
+        }
+    }
+
+    @PatchMapping("/{id}")
+    ResponseEntity<BankResponseDto> updateBankWithId(@PathVariable("id") Long id,
+                                                     @RequestBody BankRequestDto bank) {
+        return ResponseEntity.ok(this.bankService.updateBank(id, bank));
     }
 }

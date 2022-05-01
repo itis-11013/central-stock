@@ -1,14 +1,14 @@
 package ru.itis.stockmarket.models;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.*;
 
 @Entity
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Organization {
     @Id
@@ -21,5 +21,6 @@ public class Organization {
     private String address;
 
     @ManyToOne
+    @JoinColumn(name = "country_id")
     private Country country;
 }
