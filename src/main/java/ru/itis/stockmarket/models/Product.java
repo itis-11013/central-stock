@@ -31,6 +31,7 @@ public class Product {
     @JoinColumn(name = "unit_id")
     private Unit unit;
 
-    @ManyToMany(mappedBy = "products")
-    private List<ProductTag> tags;
+    @ManyToOne
+    @JoinColumn(name = "catalog_id")
+    private ProductCatalog catalog;
 }

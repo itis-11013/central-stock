@@ -15,17 +15,15 @@ import java.util.List;
  */
 
 @Entity
-@Table(name = "product_tag")
-public class ProductTag {
+@Table(name = "product_catalog")
+public class ProductCatalog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String code;
-    @ManyToMany()
-    @JoinTable(
-            name = "product_tag_products", joinColumns = {@JoinColumn(name = "tag_id")},
-            inverseJoinColumns = {@JoinColumn(name = "product_id")}
-    )
+    private String name;
+
+    @OneToMany(mappedBy = "catalog")
     private List<Product> products;
 }
