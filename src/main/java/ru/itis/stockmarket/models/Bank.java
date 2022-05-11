@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA
@@ -31,6 +32,7 @@ public class Bank {
     @SequenceGenerator(name = "bankGen", sequenceName = "bank_seq", allocationSize = 1)
     private Long id;
 
+    private UUID innerId;
     private String name;
     private String address;
 
