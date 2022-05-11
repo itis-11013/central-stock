@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -16,8 +17,8 @@ public class Organization {
     @SequenceGenerator(name = "organizationGen", sequenceName = "organization_seq", allocationSize = 1)
     private Long id;
 
+    private UUID innerId;
     private String name;
-
     private String address;
 
     @ManyToOne
