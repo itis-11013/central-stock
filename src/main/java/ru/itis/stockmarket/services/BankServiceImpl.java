@@ -14,6 +14,7 @@ import ru.itis.stockmarket.repositories.CountryRepository;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static ru.itis.stockmarket.dtos.BankResponseDto.from;
 
@@ -63,6 +64,7 @@ public class BankServiceImpl implements BankService {
                 .address(bankDto.getAddress())
                 .country(country)
                 .url(bankDto.getUrl())
+                .innerId(UUID.randomUUID())
                 .build();
         this.bankRepository.save(bank);
         return from(bank);

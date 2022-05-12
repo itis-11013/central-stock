@@ -10,6 +10,7 @@ import ru.itis.stockmarket.models.Country;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 public class BankResponseDto {
     private Long id;
     private String name;
+    private UUID innerId;
     private String address;
     private String url;
     @JsonProperty(value = "country_code")
@@ -38,6 +40,7 @@ public class BankResponseDto {
         return BankResponseDto.builder()
                 .id(bank.getId())
                 .name(bank.getName())
+                .innerId(bank.getInnerId())
                 .address(bank.getAddress())
                 .url(bank.getUrl())
                 .countryCode(

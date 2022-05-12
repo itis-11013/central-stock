@@ -2,6 +2,7 @@ package ru.itis.stockmarket.models;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA
@@ -21,8 +22,8 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private UUID innerId;
     private String name;
-
     private double price;
 
     private double count;
