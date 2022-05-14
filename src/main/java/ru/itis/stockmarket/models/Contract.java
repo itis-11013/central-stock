@@ -1,4 +1,4 @@
-package ru.itis.stockmarket.models.db;
+package ru.itis.stockmarket.models;
 
 import lombok.*;
 

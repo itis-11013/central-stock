@@ -2,7 +2,7 @@ package ru.itis.stockmarket.mappers;
 
 import org.mapstruct.*;
 import ru.itis.stockmarket.dtos.BankRequestDto;
-import ru.itis.stockmarket.models.db.Bank;
+import ru.itis.stockmarket.models.Bank;
 
 /**
  * Created by IntelliJ IDEA

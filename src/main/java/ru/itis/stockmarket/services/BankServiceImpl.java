@@ -5,9 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.itis.stockmarket.dtos.BankRequestDto;
 import ru.itis.stockmarket.dtos.BankResponseDto;
+import ru.itis.stockmarket.exceptions.NotFoundException;
 import ru.itis.stockmarket.mappers.BankMapper;
-import ru.itis.stockmarket.models.db.Bank;
-import ru.itis.stockmarket.models.db.Country;
+import ru.itis.stockmarket.models.Bank;
+import ru.itis.stockmarket.models.Country;
 import ru.itis.stockmarket.repositories.BankRepository;
 import ru.itis.stockmarket.repositories.CountryRepository;
 
@@ -48,13 +49,13 @@ public class BankServiceImpl implements BankService {
     }
 
     @Override
-    public BankResponseDto createBank(BankRequestDto bankDto) {
+    public BankResponseDto createOrganization(BankRequestDto bankDto) {
         // get country instance or create if it doesn't exist
         Country country = this.countryRepository
                 .findCountryByCode(bankDto.getCountry())
                 .or(() -> {
                     Country c = new Country();
-                    c.setCode(bankDto.getCountry()); // lombok cannot set from superClass
+                    c.setCode(bankDto.getCountry().toLowerCase()); // lombok cannot set from superClass
                     this.countryRepository.save(c);
                     return Optional.of(c);
                 }).get();
@@ -71,7 +72,7 @@ public class BankServiceImpl implements BankService {
     }
 
     @Override
-    public BankResponseDto updateBank(Long id, BankRequestDto bankDto) {
+    public BankResponseDto updateOrganization(UUID id, BankRequestDto bankDto) {
         Bank fetchedBank = _getBankWithId(id);
         this.mapper.updateBankFromDto(bankDto, fetchedBank);
         if (fetchedBank.getCountry() != null) {
@@ -82,26 +83,30 @@ public class BankServiceImpl implements BankService {
     }
 
     @Override
-    public BankResponseDto getBankWithId(Long id) {
+    public BankResponseDto getOrganizationWithId(UUID id) {
         return from(_getBankWithId(id));
     }
 
-    private Bank _getBankWithId(Long id) {
+    private Bank _getBankWithId(UUID id) {
         return this.bankRepository
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        String.format("Bank with id %d not found", id))
+                .findByInnerId(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Bank with id %s not found", id))
                 );
     }
 
     @Override
-    public List<BankResponseDto> getAllBanks() {
+    public List<BankResponseDto> getAllOrganizations() {
         return from(this.bankRepository.findAll());
     }
 
     @Override
-    public void deleteBankWithId(Long id) {
-        this.bankRepository.deleteById(id);
+    public UUID deleteOrganizationWithId(UUID id) {
+        _getBankWithId(id); // throws if bank does not exist
+        try {
+            this.bankRepository.deleteByInnerId(id);
+            return id;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

@@ -2,7 +2,7 @@ package ru.itis.stockmarket.services;
 
 import org.springframework.stereotype.Service;
 import ru.itis.stockmarket.dtos.ProductRequestDto;
-import ru.itis.stockmarket.models.db.Product;
+import ru.itis.stockmarket.models.Product;
 import ru.itis.stockmarket.repositories.ProductRepository;
 import java.util.List;
 

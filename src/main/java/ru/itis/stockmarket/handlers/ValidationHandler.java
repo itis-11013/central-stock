@@ -1,15 +1,23 @@
 package ru.itis.stockmarket.handlers;
 
+import jdk.jshell.Snippet;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.itis.stockmarket.models.ValidationError;
+import ru.itis.stockmarket.dtos.GeneralMessage;
+import ru.itis.stockmarket.dtos.Status;
+import ru.itis.stockmarket.dtos.ValidationError;
+import ru.itis.stockmarket.exceptions.NotFoundException;
 
 import java.util.HashMap;
 
@@ -25,6 +33,7 @@ import java.util.HashMap;
  */
 @ControllerAdvice
 public class ValidationHandler extends ResponseEntityExceptionHandler {
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         // map all validation errors
@@ -39,12 +48,45 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
         String path = ((ServletWebRequest) request).getRequest().getRequestURI();
         // return our ValidationError class
         ValidationError err = ValidationError.builder()
-                .messages(errors)
+                .errors(errors)
                 .timestamp(System.currentTimeMillis())
-                .error("Bad Request")
+                .description("Bad Request")
                 .path(path)
-                .status(status.value())
+                .status(Status.failure)
+                .statusCode(status.value())
                 .build();
+
         return new ResponseEntity<Object>(err,headers,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    ResponseEntity<ValidationError> handleNotFoundException(NotFoundException ex) {
+        ValidationError err = ValidationError.builder()
+                .description(ex.getStatusText())
+                .status(Status.failure)
+                .statusCode(404)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+    }
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        String path = ((ServletWebRequest) request).getRequest().getRequestURI();
+        ValidationError err = ValidationError.builder()
+                .description(ex.getLocalizedMessage())
+                .status(Status.failure)
+                .statusCode(status.value())
+                .path(path)
+                .build();
+        return ResponseEntity.status(status).headers(headers).body(err);
+    }
+
+    @ExceptionHandler(Exception.class)
+    ResponseEntity<GeneralMessage<?>> handleAllErrors(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+                body(GeneralMessage.builder()
+                        .status(Status.failure)
+                        .description("Something went wrong")
+                        .data(e.getMessage())
+                        .build());
     }
 }

@@ -1,7 +1,8 @@
-package ru.itis.stockmarket.models;
+package ru.itis.stockmarket.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpStatus;
 
 import java.util.Map;
@@ -19,13 +20,11 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter @Setter
-@Builder
+@SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ValidationError {
+public class ValidationError extends GeneralMessage<String> {
     private Long timestamp;
-    private String error;
-    private int status;
+    private int statusCode;
     private String path;
-    private String message;
-    private Map<String,String> messages;
+    private Map<String,String> errors;
 }

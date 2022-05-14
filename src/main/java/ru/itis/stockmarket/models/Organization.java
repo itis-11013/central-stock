@@ -1,4 +1,4 @@
-package ru.itis.stockmarket.models.db;
+package ru.itis.stockmarket.models;
 
 
 import lombok.*;
@@ -9,6 +9,8 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Organization {
     @Id

@@ -1,4 +1,4 @@
-package ru.itis.stockmarket.models.db;
+package ru.itis.stockmarket.models;
 
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -17,7 +17,8 @@ import java.util.UUID;
  * Desc:
  */
 @Entity
-@Table(name = "bank")
+@Table(name = "bank",
+        indexes = @Index(name = "IDX_bank_innerid", unique = true, columnList = "innerId"))
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
