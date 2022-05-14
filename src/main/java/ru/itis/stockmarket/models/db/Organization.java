@@ -1,8 +1,7 @@
-package ru.itis.stockmarket.models;
+package ru.itis.stockmarket.models.db;
 
 
 import lombok.*;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.*;
 import java.util.UUID;

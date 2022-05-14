@@ -1,4 +1,4 @@
-package ru.itis.stockmarket.models;
+package ru.itis.stockmarket.models.db;
 
 import javax.persistence.*;
 import java.util.List;

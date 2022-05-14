@@ -1,9 +1,8 @@
-package ru.itis.stockmarket.models;
+package ru.itis.stockmarket.models.db;
 
 import lombok.*;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;

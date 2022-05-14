@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.itis.stockmarket.models.Bank;
-import ru.itis.stockmarket.models.Country;
+import ru.itis.stockmarket.models.db.Bank;
+import ru.itis.stockmarket.models.db.Country;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package ru.itis.stockmarket.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.itis.stockmarket.models.Country;
+import ru.itis.stockmarket.models.db.Country;
 
 import java.util.Optional;
 

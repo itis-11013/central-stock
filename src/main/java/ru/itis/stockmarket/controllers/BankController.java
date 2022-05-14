@@ -1,15 +1,14 @@
 package ru.itis.stockmarket.controllers;
 
-import org.hibernate.Session;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.stockmarket.dtos.BankRequestDto;
 import ru.itis.stockmarket.dtos.BankResponseDto;
 import ru.itis.stockmarket.dtos.GeneralMessage;
 import ru.itis.stockmarket.dtos.Status;
-import ru.itis.stockmarket.models.Bank;
 import ru.itis.stockmarket.services.BankService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -34,7 +33,7 @@ public class BankController {
     }
 
     @PostMapping
-    ResponseEntity<BankResponseDto> createBank(@RequestBody BankRequestDto bank) {
+    ResponseEntity<BankResponseDto> createBank(@Valid @RequestBody BankRequestDto bank) {
         return ResponseEntity.ok(this.bankService.createBank(bank));
     }
 

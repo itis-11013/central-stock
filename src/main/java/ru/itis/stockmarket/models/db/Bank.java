@@ -1,11 +1,9 @@
-package ru.itis.stockmarket.models;
+package ru.itis.stockmarket.models.db;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.util.Objects;
 import java.util.UUID;
 
 /**

@@ -6,8 +6,8 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.itis.stockmarket.dtos.BankRequestDto;
 import ru.itis.stockmarket.dtos.BankResponseDto;
 import ru.itis.stockmarket.mappers.BankMapper;
-import ru.itis.stockmarket.models.Bank;
-import ru.itis.stockmarket.models.Country;
+import ru.itis.stockmarket.models.db.Bank;
+import ru.itis.stockmarket.models.db.Country;
 import ru.itis.stockmarket.repositories.BankRepository;
 import ru.itis.stockmarket.repositories.CountryRepository;
 
