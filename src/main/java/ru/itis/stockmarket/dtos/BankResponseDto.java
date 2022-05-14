@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BankResponseDto {
-    private Long id;
     private String name;
     @JsonProperty(value = "innerid")
     private UUID innerId;
@@ -36,7 +35,6 @@ public class BankResponseDto {
 
     public static BankResponseDto from(Bank bank) {
         return BankResponseDto.builder()
-                .id(bank.getId())
                 .name(bank.getName())
                 .innerId(bank.getInnerId())
                 .address(bank.getAddress())

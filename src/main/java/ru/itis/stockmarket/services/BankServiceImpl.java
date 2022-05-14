@@ -65,7 +65,7 @@ public class BankServiceImpl implements BankService {
                 .address(bankDto.getAddress())
                 .country(country)
                 .url(bankDto.getUrl())
-                .innerId(UUID.randomUUID())
+//                .innerId(UUID.randomUUID())
                 .build();
         this.bankRepository.save(bank);
         return from(bank);

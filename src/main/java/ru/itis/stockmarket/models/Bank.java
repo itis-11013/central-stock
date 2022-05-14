@@ -26,11 +26,12 @@ import java.util.UUID;
 @Setter
 @DynamicUpdate
 public class Bank {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bankGen")
+//    @SequenceGenerator(name = "bankGen", sequenceName = "bank_seq", allocationSize = 1)
+//    private Long id;
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bankGen")
-    @SequenceGenerator(name = "bankGen", sequenceName = "bank_seq", allocationSize = 1)
-    private Long id;
-
+    @GeneratedValue
     private UUID innerId;
     private String name;
     private String address;
