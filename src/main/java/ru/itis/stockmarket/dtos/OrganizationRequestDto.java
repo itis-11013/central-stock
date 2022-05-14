@@ -20,6 +20,7 @@ import javax.validation.groups.Default;
 public class OrganizationRequestDto {
     @NotEmpty(groups = {Default.class, OnCreate.class})
     private String name;
+
     @NotEmpty(groups = {Default.class,OnCreate.class})
     private String address;
 
