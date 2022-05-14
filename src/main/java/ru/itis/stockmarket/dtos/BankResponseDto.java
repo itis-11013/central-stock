@@ -1,10 +1,7 @@
 package ru.itis.stockmarket.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.itis.stockmarket.models.Bank;
 import ru.itis.stockmarket.models.Country;
 
@@ -30,6 +27,7 @@ import java.util.stream.Collectors;
 public class BankResponseDto {
     private Long id;
     private String name;
+    @JsonProperty(value = "innerid")
     private UUID innerId;
     private String address;
     private String url;

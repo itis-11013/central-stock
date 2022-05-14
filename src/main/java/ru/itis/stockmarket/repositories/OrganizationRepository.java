@@ -1,22 +1,22 @@
 package ru.itis.stockmarket.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.itis.stockmarket.models.Bank;
+import ru.itis.stockmarket.models.Organization;
 
 import java.util.Optional;
 import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA
- * Date: 27.04.2022
- * Time: 11:58 AM
+ * Date: 14.05.2022
+ * Time: 1:34 PM
  *
  * @author lordvidex
  * Name: Овамойо Олувадамилола Эванс
  * <p>
  * Desc:
  */
-public interface BankRepository extends JpaRepository<Bank, Long> {
-    Optional<Bank> findByInnerId(UUID innerId);
+public interface OrganizationRepository extends JpaRepository<Organization, Long> {
+    Optional<Organization> findByInnerId(UUID innerId);
     void deleteByInnerId(UUID innerId);
 }

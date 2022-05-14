@@ -1,21 +1,21 @@
 # Gets all banks
-GET http://localhost:8080/bank
+GET http://localhost:8091/central/bank
 
 ### Get a single bank
-GET http://localhost:8080/bank/1
+GET http://localhost:8091/central/bank/1
 
 ### adds a bank
-POST http://localhost:8080/bank
+POST http://localhost:8091/central/bank
 Content-Type: application/json
 
 {
   "name": "VTB Bank",
   "address": "Adelya Kutuya",
-  "country": "ru"
+  "country": "rudasds"
 }
 
 ### update a bank
-PATCH http://localhost:8080/bank/1
+PATCH http://localhost:8091/central/bank/1
 Content-Type: application/json
 
 {
@@ -23,4 +23,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:8080/bank/1
+DELETE http://localhost:8091/central/bank/1
