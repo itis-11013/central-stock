@@ -69,7 +69,7 @@ public class OrganizationServiceImpl implements OrganizationService<Organization
 
     public Organization _getOrgWithId(UUID id) {
         return this.organizationRepository
-                .findByInnerId(id)
+                .findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Bank with id %s not found", id))
                 );
     }
