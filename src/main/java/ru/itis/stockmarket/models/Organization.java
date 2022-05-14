@@ -2,7 +2,6 @@ package ru.itis.stockmarket.models;
 
 
 import lombok.*;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -10,6 +9,8 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Organization {
     @Id

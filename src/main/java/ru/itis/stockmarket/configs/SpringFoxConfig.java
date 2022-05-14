@@ -30,7 +30,7 @@ public class SpringFoxConfig {
                 .host("188.93.211.195")
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("ru.itis.stockmarket.controllers"))
                 .paths(PathSelectors.any())
                 .build();
     }

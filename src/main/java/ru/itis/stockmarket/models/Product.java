@@ -1,7 +1,6 @@
 package ru.itis.stockmarket.models;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.UUID;
 
 /**
