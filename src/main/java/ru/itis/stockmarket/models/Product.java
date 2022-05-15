@@ -1,5 +1,9 @@
 package ru.itis.stockmarket.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -16,12 +20,16 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "product")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private UUID innerId;
+    private UUID sellerId;
     private String name;
     private double price;
 
