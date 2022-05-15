@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNullApi;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,6 +19,7 @@ import ru.itis.stockmarket.dtos.ValidationError;
 import ru.itis.stockmarket.exceptions.NotFoundException;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Created by IntelliJ IDEA
@@ -73,6 +75,18 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
                 .description(ex.getLocalizedMessage())
                 .status(Status.failure)
                 .statusCode(status.value())
+                .path(path)
+                .build();
+        return ResponseEntity.status(status).headers(headers).body(err);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        String path = ((ServletWebRequest) request).getRequest().getRequestURI();
+        String _body = Objects.isNull(body) ? ex.getLocalizedMessage():body.toString();
+        ValidationError err = ValidationError.builder()
+                .description(_body)
+                .status(Status.failure)
                 .path(path)
                 .build();
         return ResponseEntity.status(status).headers(headers).body(err);
