@@ -86,6 +86,7 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
         String _body = Objects.isNull(body) ? ex.getLocalizedMessage():body.toString();
         ValidationError err = ValidationError.builder()
                 .description(_body)
+                .statusCode(status.value())
                 .status(Status.failure)
                 .path(path)
                 .build();
