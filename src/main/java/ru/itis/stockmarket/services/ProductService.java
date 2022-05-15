@@ -5,6 +5,7 @@ import ru.itis.stockmarket.models.Product;
 import java.util.List;
 
 
-public interface ProductService {
-    List<Product> getProducts(ProductRequestDto productForm);
+public interface ProductService<RequestDto, ResponseDto> {
+    ResponseDto createProduct(RequestDto productDto);
+    List<ResponseDto> getProducts(ProductRequestDto productForm);
 }
