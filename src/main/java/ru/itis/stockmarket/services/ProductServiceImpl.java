@@ -3,6 +3,7 @@ package ru.itis.stockmarket.services;
 import org.springframework.stereotype.Service;
 import ru.itis.stockmarket.dtos.ProductRequestDto;
 import ru.itis.stockmarket.dtos.ProductResponseDto;
+import ru.itis.stockmarket.exceptions.AlreadyExistsException;
 import ru.itis.stockmarket.exceptions.NotFoundException;
 import ru.itis.stockmarket.mappers.ProductMapper;
 import ru.itis.stockmarket.models.Product;
@@ -27,12 +28,12 @@ public class ProductServiceImpl implements ProductService<ProductRequestDto, Pro
     private final UnitRepository unitRepository;
     private final ProductMapper productMapper;
 
-    ProductServiceImpl(ProductRepository productRepository, ProductCatalogRepository catalogRepository, OrganizationRepository organizationRepository, UnitRepository unitRepository, ProductMapper productMapper, ProductMapper productMapper1) {
+    ProductServiceImpl(ProductRepository productRepository, ProductCatalogRepository catalogRepository, OrganizationRepository organizationRepository, UnitRepository unitRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.catalogRepository = catalogRepository;
         this.organizationRepository = organizationRepository;
         this.unitRepository = unitRepository;
-        this.productMapper = productMapper1;
+        this.productMapper = productMapper;
     }
 
     @Override
@@ -46,7 +47,7 @@ public class ProductServiceImpl implements ProductService<ProductRequestDto, Pro
         //check if product exist!
         boolean exists = productRepository.existsProductBySellerIdAndName(productDto.getSellerId(), productDto.getName());
         if (exists) {
-            throw new NotFoundException(String
+            throw new AlreadyExistsException(String
                     .format("Product with seller id %s and name %s already exists",
                             productDto.getSellerId(), productDto.getName()));
         }

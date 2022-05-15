@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import ru.itis.stockmarket.dtos.GeneralMessage;
 import ru.itis.stockmarket.dtos.Status;
 import ru.itis.stockmarket.dtos.ValidationError;
+import ru.itis.stockmarket.exceptions.AlreadyExistsException;
 import ru.itis.stockmarket.exceptions.NotFoundException;
 
 import java.util.HashMap;
@@ -67,6 +68,16 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
                 .statusCode(404)
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+    }
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    ResponseEntity<ValidationError> handleNotFoundException(AlreadyExistsException ex) {
+        ValidationError err = ValidationError.builder()
+                .description(ex.getStatusText())
+                .status(Status.failure)
+                .statusCode(ex.getStatusCode().value())
+                .build();
+        return ResponseEntity.status(err.getStatusCode()).body(err);
     }
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
