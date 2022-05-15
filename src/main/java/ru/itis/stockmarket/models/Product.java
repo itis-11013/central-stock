@@ -1,8 +1,6 @@
 package ru.itis.stockmarket.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -23,6 +21,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Product {
     @Id

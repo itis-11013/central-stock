@@ -27,7 +27,7 @@ public class ProductResponseDto {
     @JsonProperty(value = "innerid")
     private UUID innerId;
     private double count;
-    private String unit;
+    private Long unit;
 
     private double price;
 }

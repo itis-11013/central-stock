@@ -1,6 +1,8 @@
 package ru.itis.stockmarket.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +14,6 @@ import java.util.UUID;
 
 
 @Data
-@NoArgsConstructor
 public class ProductRequestDto {
     @NotEmpty(groups = {Default.class, OnCreate.class})
     private String code;
