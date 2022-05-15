@@ -10,7 +10,7 @@ public class Unit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String shortName;
+    private Long code;
 
     private String name;
 }
