@@ -19,10 +19,10 @@ public class ProductRequestDto {
     private String name;
     @JsonProperty(value = "sellerid")
     private UUID sellerId;
-    @DecimalMin("1.0")
+    @DecimalMin(value = "1.0" ,groups = {Default.class, OnCreate.class})
     private double count;
     @NotEmpty(groups = {Default.class, OnCreate.class})
     private String unit;
-    @DecimalMin("1.0")
+    @DecimalMin(value = "1.0" , groups = {Default.class, OnCreate.class})
     private double price;
 }

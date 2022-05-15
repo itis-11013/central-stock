@@ -16,18 +16,14 @@ import java.util.UUID;
 @Setter
 public class Contract {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bankGen")
-    @SequenceGenerator(name = "bankGen", sequenceName = "bank_seq", allocationSize = 1)
-    private Long id;
-
+    @GeneratedValue
     private UUID innerId;
     private Date contractDate;
     private Date paymentDate;
     private Date deliveryDate;
 
-    @OneToMany
-    @JoinColumn(name = "product_id")
-    private List<Product> product;
+    @ManyToOne
+    private Product product;
     private double count;
 
 }

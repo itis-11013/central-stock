@@ -36,18 +36,18 @@ public class ProductServiceImpl implements ProductService<ProductRequestDto, Pro
                         new NotFoundException(String.format("Product Catalog with code %s not found", productDto.getCode()))
                 );
 
-        productRepository
-                .existsProductBySellerIdAndName(productDto.getSellerId(), productDto.getName())
-                .orElseThrow(() ->
-                        new NotFoundException(String
-                                .format("Product with seller id %s and name %s already exists", productDto.getSellerId(), productDto.getName()))
-                );
+        boolean exists = productRepository.existsProductBySellerIdAndName(productDto.getSellerId(), productDto.getName());
+
+        if (exists) {
+            throw new NotFoundException(String
+                    .format("Product with seller id %s and name %s already exists",
+                            productDto.getSellerId(), productDto.getName()));
+        }
 
         organizationRepository.findByInnerId(productDto.getSellerId())
                 .orElseThrow(() ->
                         new NotFoundException(String.format("Can not fund organization with id %s", productDto.getSellerId()))
                 );
-        
 
         productRepository.save(Product.builder()
                 .catalog(productCat)

@@ -14,17 +14,16 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/product")
 public class ProductController {
 
-    private final ProductService<ProductRequestDto,ProductResponseDto> productService;
+    private final ProductService<ProductRequestDto, ProductResponseDto> productService;
 
     public ProductController(ProductService<ProductRequestDto, ProductResponseDto> productService) {
         this.productService = productService;
     }
 
 
-    @PostMapping
+    @PostMapping("/product")
     ResponseEntity<InnerIdResponseDto> createProduct(@Valid @RequestBody ProductRequestDto product) {
         ProductResponseDto serviceProduct = productService.createProduct(product);
         InnerIdResponseDto controllerResponse;
@@ -39,7 +38,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(controllerResponse);
     }
 
-    @PostMapping(path = "/list")
+    @PostMapping(path = "/productlist")
     ResponseEntity<List<Product>> getProductList(ProductRequestDto product) {
         return null;
     }
