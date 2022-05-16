@@ -25,8 +25,8 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID innerId;
 
     private UUID sellerId;
     private String name;
