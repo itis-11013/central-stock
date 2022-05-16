@@ -16,5 +16,6 @@ public interface ProductMapper {
     void fromDto(ProductRequestDto dto, @MappingTarget Product org);
 
     @Mapping(target = "unit", source="unit.code")
+    @Mapping(target = "innerId", source="sellerId")
     ProductResponseDto toDto(Product org);
 }
