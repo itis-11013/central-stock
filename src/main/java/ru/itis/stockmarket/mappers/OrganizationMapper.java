@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * Desc:
  */
 
-@Mapper(componentModel = "spring", imports = {UUID.class})
+@Mapper(componentModel = "spring")
 public interface OrganizationMapper {
     @Mapping(source = "country.code", target="countryCode")
     OrganizationResponseDto toDto(Organization org);
@@ -39,7 +39,6 @@ public interface OrganizationMapper {
     List<OrganizationResponseDto> toDto(List<Organization> organizations);
 
     @Mapping(target = "country.code", source = "country")
-    @Mapping(target = "innerId", expression = "java(UUID.randomUUID())")
     void fromDto(OrganizationRequestDto dto, @MappingTarget Organization org);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
