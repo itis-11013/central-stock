@@ -21,7 +21,6 @@ import java.util.Optional;
 
 @Data
 public class ProductFilterDto {
-    private int count;
+    private double count;
     private String country;
-    private int page = 1;
 }

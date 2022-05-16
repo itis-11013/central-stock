@@ -99,6 +99,7 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
                 .description(_body)
                 .statusCode(status.value())
                 .status(Status.failure)
+                .timestamp(System.currentTimeMillis())
                 .path(path)
                 .build();
         return ResponseEntity.status(status).headers(headers).body(err);

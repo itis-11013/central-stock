@@ -1,14 +1,15 @@
 package ru.itis.stockmarket.repositories;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import ru.itis.stockmarket.models.Product;
-import java.util.Optional;
+
+import java.util.List;
 import java.util.UUID;
 
 
-public interface ProductRepository extends JpaRepository<Product, UUID> {
-    boolean existsProductBySellerIdAndName(Long seller_id, String name);
-    Pageable<Product> findAllByCatalog_CodeOrderBy
-
+public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpecificationExecutor<Product> {
+    boolean existsProductBySeller_InnerIdAndName(UUID seller_id, String name);
 }

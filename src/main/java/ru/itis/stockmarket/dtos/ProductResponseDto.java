@@ -24,9 +24,11 @@ import java.util.stream.Collectors;
 public class ProductResponseDto {
     private String code;
     private String name;
-    @JsonProperty(value = "innerid")
+    @JsonProperty(value = "productid")
     private UUID innerId;
     private double count;
     private Long unit;
     private double price;
+    @JsonProperty(value="sellerid")
+    private UUID sellerId;
 }
