@@ -1,6 +1,7 @@
 package ru.itis.stockmarket.services;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.itis.stockmarket.dtos.PagedResponse;
@@ -84,8 +85,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PagedResponse<ProductResponseDto> getProducts(String catalogCode, Pageable pageable, ProductFilterDto dto) {
-        Specification<Product> specification = hasAtLeastCount(dto.getCount())
-                .and(catalogCodeLike(catalogCode));
+        Specification<Product> specification = hasAtLeastCount(dto.getCount()) // at least count of items
+                .and(Specification
+                        .where(catalogCodeEquals(catalogCode) // strict equality first
+                                .or(catalogCodeLike(catalogCode)) // weak equality second
+                        ));
+        /* if country is provided sort by country */
         if (dto.getCountry() != null) {
             specification = specification.and(hasCountryCode(dto.getCountry()));
         }

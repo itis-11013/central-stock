@@ -3,6 +3,7 @@ package ru.itis.stockmarket.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.Set;
 import java.util.UUID;
 
 /**

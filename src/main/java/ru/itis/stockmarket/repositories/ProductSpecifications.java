@@ -4,6 +4,7 @@ import org.springframework.data.jpa.domain.Specification;
 import ru.itis.stockmarket.models.*;
 
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Path;
 import javax.xml.catalog.Catalog;
 
 /**
@@ -31,9 +32,14 @@ public class ProductSpecifications {
     }
 
     public static Specification<Product> catalogCodeLike(String code) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.like(
-        root.join(Product_.catalog).get(ProductCatalog_.code),
-                "%"+code+"%"
-        );
+        return (root, query, cb) -> {
+            Path<String> productCode = root.join(Product_.catalog).get(ProductCatalog_.code);
+            return cb.like(productCode, "%"+code+"%");
+        };
+    }
+    public static Specification<Product> catalogCodeEquals(String code) {
+        return ((root, query, criteriaBuilder) -> criteriaBuilder
+                .equal(root.join(Product_.catalog)
+                        .get(ProductCatalog_.code), code));
     }
 }
