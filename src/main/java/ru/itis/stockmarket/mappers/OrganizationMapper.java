@@ -28,6 +28,9 @@ public interface OrganizationMapper {
     OrganizationResponseDto toDto(Organization org);
 
     default Collection<UUID> mapProductsToString(Collection<Product> products) {
+        if (products == null) {
+            return null;
+        }
         return products.stream()
                 .map(Product::getInnerId)
                 .collect(Collectors.toList());

@@ -107,6 +107,7 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<GeneralMessage<?>> handleAllErrors(Exception e) {
+        e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
                 body(GeneralMessage.builder()
                         .status(Status.failure)
