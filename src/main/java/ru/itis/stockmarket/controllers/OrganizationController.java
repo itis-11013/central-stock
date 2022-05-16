@@ -56,8 +56,11 @@ public class OrganizationController {
                 .data(this.organizationService.getAllOrganizations()).build();
     }
     @GetMapping("/{id}")
-    ResponseEntity<OrganizationResponseDto> getOrganizationWithId(@PathVariable UUID id) {
-        return ResponseEntity.ok(this.organizationService.getOrganizationWithId(id));
+    GeneralMessage<OrganizationResponseDto> getOrganizationWithId(@PathVariable UUID id) {
+        return new GeneralMessage<OrganizationResponseDto>()
+                .toBuilder()
+                .data(this.organizationService.getOrganizationWithId(id))
+                .build();
     }
 
     @DeleteMapping("/{id}")

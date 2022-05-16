@@ -2,10 +2,7 @@ package ru.itis.stockmarket.repositories;
 
 import org.springframework.data.jpa.domain.Specification;
 import ru.itis.stockmarket.models.*;
-
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Path;
-import javax.xml.catalog.Catalog;
 
 /**
  * Created by IntelliJ IDEA
@@ -15,7 +12,7 @@ import javax.xml.catalog.Catalog;
  * @author lordvidex
  * Name: Овамойо Олувадамилола Эванс
  * <p>
- * Desc:
+ * Desc: `Suggestions: maybe add to ProductRepository interface`
  */
 public class ProductSpecifications {
     public static Specification<Product> hasCountryCode(String countryCode) {

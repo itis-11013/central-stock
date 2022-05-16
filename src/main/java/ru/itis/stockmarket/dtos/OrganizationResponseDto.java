@@ -2,8 +2,7 @@ package ru.itis.stockmarket.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-
-import java.util.Set;
+import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -24,4 +23,5 @@ public class OrganizationResponseDto {
     private String address;
     @JsonProperty(value = "country_code")
     private String countryCode;
+    private Collection<UUID> products;
 }
