@@ -28,15 +28,17 @@ public class Product {
     @GeneratedValue
     private UUID innerId;
 
-    private UUID sellerId;
     private String name;
     private double price;
-
     private double count;
 
     @ManyToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private Organization seller;
 
     @ManyToOne
     @JoinColumn(name = "catalog_id")

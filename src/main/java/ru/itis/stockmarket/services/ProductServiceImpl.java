@@ -1,6 +1,9 @@
 package ru.itis.stockmarket.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.itis.stockmarket.dtos.ProductFilterDto;
 import ru.itis.stockmarket.dtos.ProductRequestDto;
 import ru.itis.stockmarket.dtos.ProductResponseDto;
 import ru.itis.stockmarket.exceptions.AlreadyExistsException;
@@ -15,12 +18,11 @@ import ru.itis.stockmarket.repositories.ProductRepository;
 import ru.itis.stockmarket.repositories.UnitRepository;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 
 @Service
 @Transactional
-public class ProductServiceImpl implements ProductService<ProductRequestDto, ProductResponseDto> {
+public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductCatalogRepository catalogRepository;
@@ -73,7 +75,8 @@ public class ProductServiceImpl implements ProductService<ProductRequestDto, Pro
     }
 
     @Override
-    public List<ProductResponseDto> getProducts(ProductRequestDto productForm) {
+    public Page<ProductResponseDto> getProduct(String catalogCode, ProductFilterDto filter) {
+
         return null;
     }
 }

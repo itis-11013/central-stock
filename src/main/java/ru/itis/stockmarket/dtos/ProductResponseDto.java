@@ -28,6 +28,5 @@ public class ProductResponseDto {
     private UUID innerId;
     private double count;
     private Long unit;
-
     private double price;
 }
