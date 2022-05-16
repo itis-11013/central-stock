@@ -1,7 +1,6 @@
 package ru.itis.stockmarket.models;
 
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -17,19 +16,13 @@ import java.util.UUID;
  * Desc:
  */
 @Entity
-@Table(name = "bank",
-        indexes = @Index(name = "IDX_bank_innerid", unique = true, columnList = "innerId"))
+@Table(name = "bank")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-@DynamicUpdate
 public class Bank {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bankGen")
-//    @SequenceGenerator(name = "bankGen", sequenceName = "bank_seq", allocationSize = 1)
-//    private Long id;
     @Id
     @GeneratedValue
     private UUID innerId;
@@ -39,6 +32,6 @@ public class Bank {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "country_id")
+    @JoinColumn(name = "country_id", unique = true)
     private Country country;
 }

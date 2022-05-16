@@ -1,8 +1,6 @@
 package ru.itis.stockmarket.services;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.itis.stockmarket.dtos.BankRequestDto;
 import ru.itis.stockmarket.dtos.BankResponseDto;
 import ru.itis.stockmarket.exceptions.NotFoundException;
@@ -89,7 +87,7 @@ public class BankServiceImpl implements BankService {
 
     private Bank _getBankWithId(UUID id) {
         return this.bankRepository
-                .findByInnerId(id)
+                .findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Bank with id %s not found", id))
                 );
     }
@@ -103,7 +101,7 @@ public class BankServiceImpl implements BankService {
     public UUID deleteOrganizationWithId(UUID id) {
         _getBankWithId(id); // throws if bank does not exist
         try {
-            this.bankRepository.deleteByInnerId(id);
+            this.bankRepository.deleteById(id);
             return id;
         } catch (Exception e) {
             return null;

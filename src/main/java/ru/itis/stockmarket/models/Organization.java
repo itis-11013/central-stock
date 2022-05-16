@@ -16,10 +16,7 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Organization {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "organizationGen")
-    @SequenceGenerator(name = "organizationGen", sequenceName = "organization_seq", allocationSize = 1)
-    private Long id;
-
+    @GeneratedValue
     private UUID innerId;
     private String name;
     private String address;

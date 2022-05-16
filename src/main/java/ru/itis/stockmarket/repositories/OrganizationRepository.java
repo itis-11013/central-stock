@@ -16,7 +16,5 @@ import java.util.UUID;
  * <p>
  * Desc:
  */
-public interface OrganizationRepository extends JpaRepository<Organization, Long> {
-    Optional<Organization> findByInnerId(UUID innerId);
-    void deleteByInnerId(UUID innerId);
+public interface OrganizationRepository extends JpaRepository<Organization, UUID> {
 }
