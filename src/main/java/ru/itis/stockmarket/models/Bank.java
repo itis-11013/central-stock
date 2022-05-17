@@ -1,11 +1,9 @@
 package ru.itis.stockmarket.models;
 
 import lombok.*;
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA
@@ -24,19 +22,16 @@ import java.util.Objects;
 @Builder
 @Getter
 @Setter
-@DynamicUpdate
 public class Bank {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bankGen")
-    @SequenceGenerator(name = "bankGen", sequenceName = "bank_seq", allocationSize = 1)
-    private Long id;
-
+    @GeneratedValue
+    private UUID innerId;
     private String name;
     private String address;
 
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "country_id")
+    @JoinColumn(name = "country_id", unique = true)
     private Country country;
 }

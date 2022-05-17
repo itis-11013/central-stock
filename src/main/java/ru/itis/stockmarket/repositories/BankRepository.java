@@ -1,7 +1,11 @@
 package ru.itis.stockmarket.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.itis.stockmarket.models.Bank;
+
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA
@@ -13,5 +17,5 @@ import ru.itis.stockmarket.models.Bank;
  * <p>
  * Desc:
  */
-public interface BankRepository extends JpaRepository<Bank, Long> {
+public interface BankRepository extends JpaRepository<Bank, UUID> {
 }

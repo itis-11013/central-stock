@@ -1,15 +1,13 @@
 package ru.itis.stockmarket.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.itis.stockmarket.models.Bank;
 import ru.itis.stockmarket.models.Country;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -27,8 +25,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BankResponseDto {
-    private Long id;
     private String name;
+    @JsonProperty(value = "innerid")
+    private UUID innerId;
     private String address;
     private String url;
     @JsonProperty(value = "country_code")
@@ -36,8 +35,8 @@ public class BankResponseDto {
 
     public static BankResponseDto from(Bank bank) {
         return BankResponseDto.builder()
-                .id(bank.getId())
                 .name(bank.getName())
+                .innerId(bank.getInnerId())
                 .address(bank.getAddress())
                 .url(bank.getUrl())
                 .countryCode(

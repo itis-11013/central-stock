@@ -2,6 +2,8 @@ package ru.itis.stockmarket.dtos;
 
 import lombok.Data;
 
+import javax.validation.constraints.*;
+
 /**
  * Created by IntelliJ IDEA
  * Date: 30.04.2022
@@ -12,10 +14,5 @@ import lombok.Data;
  * <p>
  * Desc:
  */
-@Data
-public class BankRequestDto {
-    private String name;
-    private String address;
-    private String country;
-    private String url;
+public class BankRequestDto extends OrganizationRequestDto {
 }
