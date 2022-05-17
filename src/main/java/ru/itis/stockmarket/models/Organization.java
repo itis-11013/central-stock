@@ -4,6 +4,8 @@ package ru.itis.stockmarket.models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -22,6 +24,10 @@ public class Organization {
     @ManyToOne
     @JoinColumn(name = "bank_id")
     private Bank bank;
+
+    /* deleting an org is therefore harmful as all products they sell are discarded as well */
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private Collection<Product> products;
 
     @ManyToOne
     @JoinColumn(name = "country_id")

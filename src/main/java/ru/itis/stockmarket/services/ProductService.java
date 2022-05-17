@@ -1,11 +1,15 @@
 package ru.itis.stockmarket.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import ru.itis.stockmarket.dtos.PagedResponse;
+import ru.itis.stockmarket.dtos.ProductFilterDto;
 import ru.itis.stockmarket.dtos.ProductRequestDto;
+import ru.itis.stockmarket.dtos.ProductResponseDto;
 import ru.itis.stockmarket.models.Product;
-import java.util.List;
 
 
-public interface ProductService<RequestDto, ResponseDto> {
-    ResponseDto createProduct(RequestDto productDto);
-    List<ResponseDto> getProducts(ProductRequestDto productForm);
+public interface ProductService {
+    ProductResponseDto createProduct(ProductRequestDto productDto);
+    PagedResponse<ProductResponseDto> getProducts(String catalogCode, Pageable pageable, ProductFilterDto dto);
 }

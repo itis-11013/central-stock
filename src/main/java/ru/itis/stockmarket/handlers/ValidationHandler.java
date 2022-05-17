@@ -3,21 +3,19 @@ package ru.itis.stockmarket.handlers;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNullApi;
 import org.springframework.lang.Nullable;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.itis.stockmarket.dtos.GeneralMessage;
 import ru.itis.stockmarket.dtos.Status;
 import ru.itis.stockmarket.dtos.ValidationError;
-import ru.itis.stockmarket.exceptions.NotFoundException;
-
+import ru.itis.stockmarket.exceptions.CustomServerErrorException;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -35,7 +33,7 @@ import java.util.Objects;
 public class ValidationHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         // map all validation errors
         HashMap<String,String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
@@ -56,38 +54,35 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
                 .statusCode(status.value())
                 .build();
 
-        return new ResponseEntity<Object>(err,headers,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(err, headers, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    ResponseEntity<ValidationError> handleNotFoundException(NotFoundException ex) {
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+       return this.handleBindException(ex,headers,status,request);
+    }
+
+    @ExceptionHandler(CustomServerErrorException.class)
+    ResponseEntity<ValidationError> handleCustomServerErrorException(CustomServerErrorException ex) {
         ValidationError err = ValidationError.builder()
                 .description(ex.getStatusText())
                 .status(Status.failure)
-                .statusCode(404)
+                .timestamp(System.currentTimeMillis())
+                .statusCode(ex.getStatusCode().value())
                 .build();
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
-    }
-    @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String path = ((ServletWebRequest) request).getRequest().getRequestURI();
-        ValidationError err = ValidationError.builder()
-                .description(ex.getLocalizedMessage())
-                .status(Status.failure)
-                .statusCode(status.value())
-                .path(path)
-                .build();
-        return ResponseEntity.status(status).headers(headers).body(err);
+        return ResponseEntity.status(ex.getStatusCode()).body(err);
     }
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        System.out.println(ex);
         String path = ((ServletWebRequest) request).getRequest().getRequestURI();
         String _body = Objects.isNull(body) ? ex.getLocalizedMessage():body.toString();
         ValidationError err = ValidationError.builder()
                 .description(_body)
                 .statusCode(status.value())
                 .status(Status.failure)
+                .timestamp(System.currentTimeMillis())
                 .path(path)
                 .build();
         return ResponseEntity.status(status).headers(headers).body(err);
@@ -95,6 +90,7 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<GeneralMessage<?>> handleAllErrors(Exception e) {
+        e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
                 body(GeneralMessage.builder()
                         .status(Status.failure)
