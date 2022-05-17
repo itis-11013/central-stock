@@ -36,4 +36,6 @@ public class Contract {
 
     private double count;
 
+    private boolean deleted = Boolean.FALSE;
+
 }

@@ -25,7 +25,8 @@ public class Organization {
     @JoinColumn(name = "bank_id")
     private Bank bank;
 
-    @OneToMany(mappedBy = "seller")
+    /* deleting an org is therefore harmful as all products they sell are discarded as well */
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Collection<Product> products;
 
     @ManyToOne

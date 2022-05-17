@@ -1,7 +1,12 @@
 package ru.itis.stockmarket.dtos;
 
+import lombok.Data;
+import org.hibernate.annotations.NotFound;
+
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -14,12 +19,13 @@ import java.util.UUID;
  * <p>
  * Desc:
  */
+@Data
 public class ContractRequestDto {
-    @NotEmpty
+    @NotNull
     private UUID productid;
     @DecimalMin("0")
     private double count;
-    @NotEmpty
+    @NotNull
     private UUID buyerid;
 
 }

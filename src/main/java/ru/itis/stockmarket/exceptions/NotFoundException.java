@@ -1,7 +1,6 @@
 package ru.itis.stockmarket.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpServerErrorException;
 
 /**
  * Created by IntelliJ IDEA
@@ -13,7 +12,7 @@ import org.springframework.web.client.HttpServerErrorException;
  * <p>
  * Desc:
  */
-public class NotFoundException extends HttpServerErrorException {
+public class NotFoundException extends CustomServerErrorException {
     public NotFoundException(String statusText) {
         super(HttpStatus.NOT_FOUND, statusText);
     }
