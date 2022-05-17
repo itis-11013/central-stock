@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import ru.itis.stockmarket.dtos.GeneralMessage;
 import ru.itis.stockmarket.dtos.Status;
 import ru.itis.stockmarket.dtos.ValidationError;
+import ru.itis.stockmarket.exceptions.AlreadyExistsException;
 import ru.itis.stockmarket.exceptions.NotFoundException;
 
 import java.util.HashMap;
@@ -68,6 +69,16 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
     }
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    ResponseEntity<ValidationError> handleNotFoundException(AlreadyExistsException ex) {
+        ValidationError err = ValidationError.builder()
+                .description(ex.getStatusText())
+                .status(Status.failure)
+                .statusCode(ex.getStatusCode().value())
+                .build();
+        return ResponseEntity.status(err.getStatusCode()).body(err);
+    }
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String path = ((ServletWebRequest) request).getRequest().getRequestURI();
@@ -88,6 +99,7 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
                 .description(_body)
                 .statusCode(status.value())
                 .status(Status.failure)
+                .timestamp(System.currentTimeMillis())
                 .path(path)
                 .build();
         return ResponseEntity.status(status).headers(headers).body(err);
@@ -95,6 +107,7 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<GeneralMessage<?>> handleAllErrors(Exception e) {
+        e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
                 body(GeneralMessage.builder()
                         .status(Status.failure)
