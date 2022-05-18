@@ -33,7 +33,7 @@ public class PagedResponse<T> {
                 .pageSize(page.getSize())
                 .totalPages(page.getTotalPages())
                 .totalElements(page.getTotalElements())
-                .currentPage(page.getNumber())
+                .currentPage(page.getNumber() + 1)
                 .build();
     }
 }

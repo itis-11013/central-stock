@@ -1,8 +1,8 @@
 package ru.itis.stockmarket.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.itis.stockmarket.dtos.ContractRequestDto;
 import ru.itis.stockmarket.dtos.ContractResponseDto;
 import ru.itis.stockmarket.exceptions.CustomServerErrorException;
@@ -16,6 +16,7 @@ import ru.itis.stockmarket.repositories.OrganizationRepository;
 import ru.itis.stockmarket.repositories.ProductRepository;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -29,22 +30,13 @@ import java.util.UUID;
  * Desc:
  */
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class ContractServiceImpl implements ContractService {
     private final ContractRepository contractRepository;
     private final ProductRepository productRepository;
     private final OrganizationRepository organizationRepository;
     private final ContractMapper contractMapper;
-
-    public ContractServiceImpl(ContractRepository contractRepository,
-                               ProductRepository productRepository,
-                               OrganizationRepository organizationRepository,
-                               ContractMapper contractMapper) {
-        this.contractRepository = contractRepository;
-        this.productRepository = productRepository;
-        this.organizationRepository = organizationRepository;
-        this.contractMapper = contractMapper;
-    }
 
     @Override
     public ContractResponseDto findContractById(UUID id) {
@@ -66,6 +58,13 @@ public class ContractServiceImpl implements ContractService {
         if (product.getSeller().getInnerId().equals(buyer.getInnerId())) {
             throw new CustomServerErrorException(HttpStatus.FORBIDDEN, "Organization cannot buy a product from itself");
         }
+
+        /* freezes the amount buyer wants to buy or throw if he wants to buy more than seller has */
+        if (product.getCount() < dto.getCount()) {
+            throw new CustomServerErrorException(HttpStatus.BAD_REQUEST, String.format("Cannot buy more than %f from this seller", product.getCount()));
+        } else {
+            this.productRepository.freezeCountById(dto.getCount(), product.getInnerId());
+        }
         Contract contract = Contract.builder()
                 .buyer(buyer)
                 .count(dto.getCount())
@@ -79,6 +78,13 @@ public class ContractServiceImpl implements ContractService {
         // throws if not found or already soft deleted
         ContractResponseDto contract = this.findContractById(id);
 
+        // unfreeze the count on the product
+        Optional<Product> product =
+        this.productRepository
+                .findById(contract.getProductId());
+        product.ifPresent(value -> this.productRepository.unfreezeCountById(contract.getCount(), value.getInnerId()));
+
+        // soft delete the contract
         this.contractRepository.softDeleteById(contract.getContractId());
     }
 

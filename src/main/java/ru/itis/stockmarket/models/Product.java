@@ -3,6 +3,7 @@ package ru.itis.stockmarket.models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -31,6 +32,8 @@ public class Product {
     private String name;
     private double price;
     private double count;
+    @Builder.Default
+    private double frozenCount = 0;
 
     @ManyToOne
     @JoinColumn(name = "unit_id")
@@ -43,4 +46,7 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "catalog_id")
     private ProductCatalog catalog;
+
+    @OneToMany(mappedBy = "product")
+    private List<Contract> contracts;
 }

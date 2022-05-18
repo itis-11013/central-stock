@@ -1,7 +1,8 @@
 package ru.itis.stockmarket.services;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.itis.stockmarket.dtos.PagedResponse;
@@ -21,11 +22,11 @@ import static ru.itis.stockmarket.repositories.ProductSpecifications.*;
 import static ru.itis.stockmarket.dtos.PagedResponse.*;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -33,18 +34,6 @@ public class ProductServiceImpl implements ProductService {
     private final OrganizationRepository organizationRepository;
     private final UnitRepository unitRepository;
     private final ProductMapper productMapper;
-
-    ProductServiceImpl(ProductRepository productRepository,
-                       ProductCatalogRepository catalogRepository,
-                       OrganizationRepository organizationRepository,
-                       UnitRepository unitRepository,
-                       ProductMapper productMapper) {
-        this.productRepository = productRepository;
-        this.catalogRepository = catalogRepository;
-        this.organizationRepository = organizationRepository;
-        this.unitRepository = unitRepository;
-        this.productMapper = productMapper;
-    }
 
     @Override
     public ProductResponseDto createProduct(ProductRequestDto productDto) {
@@ -84,11 +73,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PagedResponse<ProductResponseDto> getProducts(String catalogCode, Pageable pageable, ProductFilterDto dto) {
+    public PagedResponse<ProductResponseDto> getProducts(ProductFilterDto dto) {
+        Pageable pageable = PageRequest.of(dto.getPage() - 1, dto.getSize()); // because page should be one-indexed
         Specification<Product> specification = hasAtLeastCount(dto.getCount()) // at least count of items
                 .and(Specification
-                        .where(catalogCodeEquals(catalogCode) // strict equality first
-                                .or(catalogCodeLike(catalogCode)) // weak equality second
+                        .where(catalogCodeEquals(dto.getCode()) // strict equality first
+                                .or(catalogCodeLike(dto.getCode())) // weak equality second
                         ));
         /* if country is provided sort by country */
         if (dto.getCountry() != null) {

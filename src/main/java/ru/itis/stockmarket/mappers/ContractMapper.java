@@ -19,6 +19,7 @@ import ru.itis.stockmarket.models.Organization;
  */
 @Mapper(componentModel = "spring")
 public interface ContractMapper {
+    @Mapping(target = "isPaid", expression = "java(contract.getPaymentDate() == null ? false : true)")
     @Mapping(source = "contractDate", target = "createdAt")
     @Mapping(source = "innerId", target = "contractId")
     @Mapping(source = "product.innerId", target = "productId")

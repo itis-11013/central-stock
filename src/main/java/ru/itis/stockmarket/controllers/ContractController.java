@@ -1,5 +1,6 @@
 package ru.itis.stockmarket.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.stockmarket.dtos.ContractRequestDto;
 import ru.itis.stockmarket.dtos.ContractResponseDto;
@@ -30,6 +31,7 @@ public class ContractController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public GeneralMessage<ContractResponseDto> createContract(@Valid @RequestBody ContractRequestDto dto) {
         return new GeneralMessage<ContractResponseDto>().toBuilder()
                 .data(this.contractService.createContract(dto))

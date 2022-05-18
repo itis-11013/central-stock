@@ -29,7 +29,6 @@ public class BankResponseDto {
     @JsonProperty(value = "innerid")
     private UUID innerId;
     private String address;
-    private String url;
     @JsonProperty(value = "country_code")
     private String countryCode;
 
@@ -38,7 +37,6 @@ public class BankResponseDto {
                 .name(bank.getName())
                 .innerId(bank.getInnerId())
                 .address(bank.getAddress())
-                .url(bank.getUrl())
                 .countryCode(
                         Optional.ofNullable(bank.getCountry())
                                 .map(Country::getCode)
