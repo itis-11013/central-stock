@@ -32,7 +32,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new CustomServerErrorException(HttpStatus.BAD_REQUEST,
                     "Buyer and seller from same country!");
         }
-        // countries
+        // seller Country
         Country sellerCountry = contract.getProduct().getSeller().getCountry();
         // banks
         Bank buyerBank = contract.getBuyer().getBank();
