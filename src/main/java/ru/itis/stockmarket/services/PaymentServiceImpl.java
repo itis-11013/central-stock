@@ -34,7 +34,6 @@ public class PaymentServiceImpl implements PaymentService {
         }
         // countries
         Country sellerCountry = contract.getProduct().getSeller().getCountry();
-        Country buyerCountry = contract.getBuyer().getCountry();
         // banks
         Bank buyerBank = contract.getBuyer().getBank();
         Bank sellerBank = contract.getProduct().getSeller().getBank();
