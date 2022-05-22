@@ -12,6 +12,7 @@ import ru.itis.stockmarket.repositories.ContractRepository;
 import ru.itis.stockmarket.repositories.ProductRepository;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -32,11 +33,16 @@ public class PaymentServiceImpl implements PaymentService {
             throw new CustomServerErrorException(HttpStatus.BAD_REQUEST,
                     "Buyer and seller from same country!");
         }
+        // product
+        Product product = contract.getProduct();
         // seller Country
         Country sellerCountry = contract.getProduct().getSeller().getCountry();
+        // Organizations
+        Organization buyerOrg = contract.getBuyer();
+        Organization sellerOrg = product.getSeller();
         // banks
-        Bank buyerBank = contract.getBuyer().getBank();
-        Bank sellerBank = contract.getProduct().getSeller().getBank();
+        Bank buyerBank = bankRepository.findBankByCountry_Code(buyerOrg.getCountry().getCode());
+        Bank sellerBank = bankRepository.findBankByCountry_Code(sellerOrg.getCountry().getCode());
         // Accounts
         Account buyerAccount = _getAccountByCountry(sellerCountry, buyerBank);
         Account sellerAccount = _getAccountByCountry(sellerCountry, sellerBank);
@@ -44,16 +50,11 @@ public class PaymentServiceImpl implements PaymentService {
         double buyerBalance = buyerAccount.getBalance();
         double sellerBalance = sellerAccount.getBalance();
         // Product Price
-        double productPrice = contract.getProduct().getPrice();
+        double productPrice = product.getPrice() * product.getCount();
         // check if the money is enough
         if (buyerBalance < productPrice) {
             throw new CustomServerErrorException(HttpStatus.BAD_REQUEST,
                     String.format("Balance %s not enough!!", buyerBalance));
-        }
-        // check if count
-        if (contract.getProduct().getCount() < contract.getCount()){
-            throw new CustomServerErrorException(HttpStatus.BAD_REQUEST,
-                    "Count product not enough!!");
         }
         // money transfer
         sellerAccount.setBalance(sellerBalance + productPrice);
@@ -61,9 +62,11 @@ public class PaymentServiceImpl implements PaymentService {
         bankRepository.save(buyerBank);
         bankRepository.save(sellerBank);
         // product count
-        Product product = contract.getProduct();
-        product.setCount(product.getCount() - contract.getCount());
+        product.setFrozenCount(product.getFrozenCount() - contract.getCount());
         productRepository.save(product);
+        // set payment date
+        contract.setPaymentDate(new Date());
+        contractRepository.save(contract);
         return InnerIdResponseDto
                 .builder()
                 .innerid(contract.getInnerId())

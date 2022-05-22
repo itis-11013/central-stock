@@ -18,4 +18,5 @@ import java.util.UUID;
  */
 public interface BankRepository extends JpaRepository<Bank, UUID> {
     boolean existsBankByCountry(Country country);
+    Bank findBankByCountry_Code(String code);
 }
