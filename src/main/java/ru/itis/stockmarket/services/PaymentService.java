@@ -5,5 +5,5 @@ import ru.itis.stockmarket.dtos.InnerIdResponseDto;
 import java.util.UUID;
 
 public interface PaymentService {
-    InnerIdResponseDto payment(UUID contractId);
+    InnerIdResponseDto makePaymentForContract(UUID contractId);
 }

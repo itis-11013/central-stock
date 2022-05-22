@@ -1,17 +1,13 @@
 package ru.itis.stockmarket.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.itis.stockmarket.dtos.GeneralMessage;
 import ru.itis.stockmarket.dtos.InnerIdResponseDto;
 import ru.itis.stockmarket.dtos.PaymentRequestDto;
 import ru.itis.stockmarket.dtos.Status;
 import ru.itis.stockmarket.services.PaymentService;
-
-import javax.validation.Valid;
-import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA
@@ -25,18 +21,13 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/payment")
-
+@RequiredArgsConstructor
 public class PaymentController {
-
     private final PaymentService paymentService;
-
-    public PaymentController(PaymentService paymentService) {
-        this.paymentService = paymentService;
-    }
 
     @PostMapping
     ResponseEntity<InnerIdResponseDto> createPayment(@RequestBody PaymentRequestDto payment) {
-        InnerIdResponseDto serviceResponse = paymentService.payment(payment.getContractId());
+        InnerIdResponseDto serviceResponse = paymentService.makePaymentForContract(payment.getContractId());
 
         InnerIdResponseDto controllerResponse = InnerIdResponseDto
                 .builder()

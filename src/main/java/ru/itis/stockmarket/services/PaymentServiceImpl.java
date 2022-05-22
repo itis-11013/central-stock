@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.itis.stockmarket.dtos.InnerIdResponseDto;
+import ru.itis.stockmarket.exceptions.BadRequestException;
 import ru.itis.stockmarket.exceptions.CustomServerErrorException;
 import ru.itis.stockmarket.exceptions.NotFoundException;
 import ru.itis.stockmarket.models.*;
@@ -25,42 +26,55 @@ public class PaymentServiceImpl implements PaymentService {
     private final ProductRepository productRepository;
 
     @Override
-    public InnerIdResponseDto payment(UUID contractId) {
+    public InnerIdResponseDto makePaymentForContract(UUID contractId) {
         Contract contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new NotFoundException(String.format("Contract with id %s not found", contractId)));
-        if (contract.getBuyer().getCountry() == contract.getProduct().getSeller().getCountry()) {
-            // from same country
-            throw new CustomServerErrorException(HttpStatus.BAD_REQUEST,
-                    "Buyer and seller from same country!");
+
+        /* check if payment has been made  - idempotency check */
+        if (contract.getPaymentDate() != null) {
+            throw new BadRequestException("Payment has already been made for this contract");
         }
+
         // product
         Product product = contract.getProduct();
-        // seller Country
-        Country sellerCountry = contract.getProduct().getSeller().getCountry();
         // Organizations
         Organization buyerOrg = contract.getBuyer();
         Organization sellerOrg = product.getSeller();
-        // banks
-        Bank buyerBank = bankRepository.findBankByCountry_Code(buyerOrg.getCountry().getCode());
-        Bank sellerBank = bankRepository.findBankByCountry_Code(sellerOrg.getCountry().getCode());
-        // Accounts
-        Account buyerAccount = _getAccountByCountry(sellerCountry, buyerBank);
-        Account sellerAccount = _getAccountByCountry(sellerCountry, sellerBank);
-        // Balances
-        double buyerBalance = buyerAccount.getBalance();
-        double sellerBalance = sellerAccount.getBalance();
-        // Product Price
-        double productPrice = product.getPrice() * product.getCount();
-        // check if the money is enough
-        if (buyerBalance < productPrice) {
-            throw new CustomServerErrorException(HttpStatus.BAD_REQUEST,
-                    String.format("Balance %s not enough!!", buyerBalance));
+        // Countries
+        Country sellerCountry = sellerOrg.getCountry();
+        Country buyerCountry = buyerOrg.getCountry();
+
+        if (buyerCountry != sellerCountry) {
+            // banks
+            Bank buyerBank = bankRepository.findBankByCountry_Code(buyerCountry.getCode())
+                    .orElseThrow(() -> new NotFoundException(String.format("Bank with country code %s not found", buyerCountry.getCode())));
+
+            Bank sellerBank = bankRepository.findBankByCountry_Code(sellerCountry.getCode())
+                    .orElseThrow(() -> new NotFoundException(String.format("Bank with country code %s not found", buyerCountry.getCode())));
+
+            // Accounts for the national banks
+            Account buyerAccount = _getAccountByCountry(sellerCountry, buyerBank);
+            Account sellerAccount = _getAccountByCountry(sellerCountry, sellerBank);
+
+            // Balances for the national banks
+            double buyerBalance = buyerAccount.getBalance();
+            double sellerBalance = sellerAccount.getBalance();
+
+            // Contract amount
+            double contractAmount = product.getPrice() * contract.getCount();
+
+            // check if the money is enough
+            if (buyerBalance < contractAmount) {
+                throw new BadRequestException(
+                        String.format("'%s' Balance for Bank of '%s' not enough!!", sellerCountry.getCode(), buyerCountry.getCode()));
+            }
+            // money transfer
+            sellerAccount.setBalance(sellerBalance + contractAmount);
+            buyerAccount.setBalance(buyerBalance - contractAmount);
+            bankRepository.save(buyerBank);
+            bankRepository.save(sellerBank);
+            // TODO: notify bank about money transfer and update delivery date
         }
-        // money transfer
-        sellerAccount.setBalance(sellerBalance + productPrice);
-        buyerAccount.setBalance(buyerBalance - productPrice);
-        bankRepository.save(buyerBank);
-        bankRepository.save(sellerBank);
         // product count
         product.setFrozenCount(product.getFrozenCount() - contract.getCount());
         productRepository.save(product);
@@ -80,6 +94,4 @@ public class PaymentServiceImpl implements PaymentService {
         }
         throw new NotFoundException(String.format("Can not fund account for country %s ", country.getName()));
     }
-
-
 }
