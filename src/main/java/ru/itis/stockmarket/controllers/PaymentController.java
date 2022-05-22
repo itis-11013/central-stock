@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.stockmarket.dtos.GeneralMessage;
 import ru.itis.stockmarket.dtos.InnerIdResponseDto;
+import ru.itis.stockmarket.dtos.PaymentRequestDto;
 import ru.itis.stockmarket.dtos.Status;
 import ru.itis.stockmarket.services.PaymentService;
 
@@ -33,15 +34,15 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @GetMapping("/{id}")
-    ResponseEntity<InnerIdResponseDto> createPayment(@PathVariable UUID id) {
-        InnerIdResponseDto serviceResponse = paymentService.payment(id);
+    @PostMapping
+    ResponseEntity<InnerIdResponseDto> createPayment(@RequestBody PaymentRequestDto payment) {
+        InnerIdResponseDto serviceResponse = paymentService.payment(payment.getContractId());
 
         InnerIdResponseDto controllerResponse = InnerIdResponseDto
                 .builder()
                 .innerid(serviceResponse.getInnerid())
                 .status(Status.success)
-                .description("Organization created successfully")
+                .description("Payment successful")
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(controllerResponse);
