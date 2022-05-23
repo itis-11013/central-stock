@@ -1,10 +1,13 @@
 package ru.itis.stockmarket.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.itis.stockmarket.dtos.InnerIdResponseDto;
-
-import javax.validation.Valid;
+import ru.itis.stockmarket.dtos.PaymentRequestDto;
+import ru.itis.stockmarket.dtos.Status;
+import ru.itis.stockmarket.services.PaymentService;
 
 /**
  * Created by IntelliJ IDEA
@@ -18,11 +21,21 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/payment")
+@RequiredArgsConstructor
 public class PaymentController {
-    InnerIdResponseDto createPayment() {
-        // TODO: complete controller impl.
-        return InnerIdResponseDto
+    private final PaymentService paymentService;
+
+    @PostMapping
+    ResponseEntity<InnerIdResponseDto> createPayment(@RequestBody PaymentRequestDto payment) {
+        InnerIdResponseDto serviceResponse = paymentService.makePaymentForContract(payment.getContractId());
+
+        InnerIdResponseDto controllerResponse = InnerIdResponseDto
                 .builder()
+                .innerid(serviceResponse.getInnerid())
+                .status(Status.success)
+                .description("Payment successful")
                 .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(controllerResponse);
     }
 }

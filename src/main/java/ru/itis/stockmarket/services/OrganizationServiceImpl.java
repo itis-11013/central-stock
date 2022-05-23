@@ -1,5 +1,6 @@
 package ru.itis.stockmarket.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.itis.stockmarket.dtos.OrganizationRequestDto;
 import ru.itis.stockmarket.dtos.OrganizationResponseDto;
@@ -27,17 +28,11 @@ import java.util.UUID;
  */
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class OrganizationServiceImpl implements OrganizationService<OrganizationRequestDto, OrganizationResponseDto> {
     private final OrganizationRepository organizationRepository;
     private final CountryRepository countryRepository;
     private final OrganizationMapper organizationMapper;
-
-    public OrganizationServiceImpl(OrganizationRepository organizationRepository,
-                                   CountryRepository countryRepository, OrganizationMapper organizationMapper) {
-        this.organizationRepository = organizationRepository;
-        this.countryRepository = countryRepository;
-        this.organizationMapper = organizationMapper;
-    }
 
     @Override
     public OrganizationResponseDto createOrganization(OrganizationRequestDto organizationDto) {
@@ -50,6 +45,16 @@ public class OrganizationServiceImpl implements OrganizationService<Organization
                     this.countryRepository.save(c);
                     return Optional.of(c);
                 }).get();
+
+        /* check if an organization with that name, address and country already exist */
+        Optional<Organization> alreadyExists = this.organizationRepository.findByAddressAndNameAndCountry(
+                organizationDto.getAddress(),
+                organizationDto.getName(),
+                country);
+        if (alreadyExists.isPresent()) {
+            return this.organizationMapper.toDto(alreadyExists.get());
+        }
+
         // set the organization data
         Organization org = Organization.builder()
                 .country(country)
@@ -88,6 +93,6 @@ public class OrganizationServiceImpl implements OrganizationService<Organization
     public UUID deleteOrganizationWithId(UUID id) {
         Organization _org = _getOrgWithId(id);
         this.organizationRepository.delete(_org);
-        return _org.getInnerId();
+        return id;
     }
 }

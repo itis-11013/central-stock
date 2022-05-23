@@ -37,12 +37,19 @@ public class ProductController {
     }
 
     @GetMapping("/productlist")
-    GeneralMessage<PagedResponse<ProductResponseDto>> getProductList(@RequestParam String code,
-                                                 Pageable pageable,
-                                                 ProductFilterDto filter) {
-       return new GeneralMessage<PagedResponse<ProductResponseDto>>()
-               .toBuilder()
-               .data(this.productService.getProducts(code, pageable, filter))
-               .build();
+    GeneralMessage<PagedResponse<ProductResponseDto>> getProductList(
+            @RequestParam String code,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "0") double count,
+            @RequestParam(required = false) String country
+    ) {
+        ProductFilterDto dto = ProductFilterDto.builder()
+                .size(size).page(page).count(count).country(country).code(code)
+                .build();
+        return new GeneralMessage<PagedResponse<ProductResponseDto>>()
+                .toBuilder()
+                .data(this.productService.getProducts(dto))
+                .build();
     }
 }

@@ -1,10 +1,10 @@
 package ru.itis.stockmarket.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -18,6 +18,7 @@ import java.util.UUID;
  * Desc:
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ContractResponseDto {
     @JsonProperty("contractid")
     private UUID contractId;
@@ -25,5 +26,8 @@ public class ContractResponseDto {
     private UUID productId;
     private double count;
     private OrganizationResponseDto buyer;
-    private LocalDateTime createdAt;
+    private Date createdAt;
+    private Boolean isPaid;
+    private Date paymentDate;
+    private Date deliveryDate;
 }

@@ -11,5 +11,5 @@ import ru.itis.stockmarket.models.Product;
 
 public interface ProductService {
     ProductResponseDto createProduct(ProductRequestDto productDto);
-    PagedResponse<ProductResponseDto> getProducts(String catalogCode, Pageable pageable, ProductFilterDto dto);
+    PagedResponse<ProductResponseDto> getProducts(ProductFilterDto dto);
 }

@@ -3,6 +3,7 @@ package ru.itis.stockmarket.models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -28,10 +29,10 @@ public class Bank {
     private UUID innerId;
     private String name;
     private String address;
-
-    private String url;
-
     @ManyToOne
     @JoinColumn(name = "country_id", unique = true)
     private Country country;
+
+    @OneToMany(mappedBy = "bank", cascade = CascadeType.PERSIST)
+    Collection<Account> accounts;
 }
