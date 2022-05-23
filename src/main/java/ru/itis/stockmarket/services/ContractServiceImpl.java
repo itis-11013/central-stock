@@ -2,6 +2,7 @@ package ru.itis.stockmarket.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.itis.stockmarket.dtos.ContractRequestDto;
 import ru.itis.stockmarket.dtos.ContractResponseDto;
@@ -15,9 +16,12 @@ import ru.itis.stockmarket.repositories.ContractRepository;
 import ru.itis.stockmarket.repositories.OrganizationRepository;
 import ru.itis.stockmarket.repositories.ProductRepository;
 
+import javax.annotation.PreDestroy;
 import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by IntelliJ IDEA
@@ -37,6 +41,10 @@ public class ContractServiceImpl implements ContractService {
     private final ProductRepository productRepository;
     private final OrganizationRepository organizationRepository;
     private final ContractMapper contractMapper;
+    private final WebhookService webhookService;
+
+    // Instantiate an executor service
+    private final ExecutorService executor = Executors.newFixedThreadPool(4);
 
     @Override
     public ContractResponseDto findContractById(UUID id) {
@@ -70,7 +78,17 @@ public class ContractServiceImpl implements ContractService {
                 .count(dto.getCount())
                 .product(product)
                 .build();
-        return this.contractMapper.toDto(this.contractRepository.save(contract));
+
+        ContractResponseDto response = this.contractMapper.toDto(this.contractRepository.save(contract));
+
+        /* send response to seller's bank in another thread */
+        executor.submit(() -> {
+            webhookService.onCreateContract(response, product.getSeller().getCountry().getCode());
+            System.out.println("Finished running on " + Thread.currentThread().getName());
+        });
+
+        // immediately return the response in the main thread
+        return response;
     }
 
     @Override
@@ -86,6 +104,12 @@ public class ContractServiceImpl implements ContractService {
 
         // soft delete the contract
         this.contractRepository.softDeleteById(contract.getContractId());
+    }
+
+    @PreDestroy
+    public void shutdownExecutors() {
+        // needed to avoid resource leak
+        executor.shutdown();
     }
 
 }

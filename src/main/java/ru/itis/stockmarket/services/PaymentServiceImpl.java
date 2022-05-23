@@ -1,20 +1,23 @@
 package ru.itis.stockmarket.services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ru.itis.stockmarket.dtos.GeneralMessage;
 import ru.itis.stockmarket.dtos.InnerIdResponseDto;
+import ru.itis.stockmarket.dtos.Status;
 import ru.itis.stockmarket.exceptions.BadRequestException;
-import ru.itis.stockmarket.exceptions.CustomServerErrorException;
 import ru.itis.stockmarket.exceptions.NotFoundException;
 import ru.itis.stockmarket.models.*;
 import ru.itis.stockmarket.repositories.BankRepository;
 import ru.itis.stockmarket.repositories.ContractRepository;
 import ru.itis.stockmarket.repositories.ProductRepository;
 
+import javax.annotation.PreDestroy;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 @Transactional
@@ -24,6 +27,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final ContractRepository contractRepository;
     private final BankRepository bankRepository;
     private final ProductRepository productRepository;
+    private final WebhookService webhookService;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     @Override
     public InnerIdResponseDto makePaymentForContract(UUID contractId) {
@@ -73,14 +78,18 @@ public class PaymentServiceImpl implements PaymentService {
             buyerAccount.setBalance(buyerBalance - contractAmount);
             bankRepository.save(buyerBank);
             bankRepository.save(sellerBank);
-            // TODO: notify bank about money transfer and update delivery date
         }
         // product count
         product.setFrozenCount(product.getFrozenCount() - contract.getCount());
         productRepository.save(product);
+
         // set payment date
         contract.setPaymentDate(new Date());
         contractRepository.save(contract);
+
+        /* notify the bank about payment and update for contract payment in another thread */
+        onPaymentMade(contract);
+
         return InnerIdResponseDto
                 .builder()
                 .innerid(contract.getInnerId())
@@ -93,5 +102,25 @@ public class PaymentServiceImpl implements PaymentService {
                 return a;
         }
         throw new NotFoundException(String.format("Can not fund account for country %s ", country.getName()));
+    }
+
+    /**
+     * Notifies the seller's bank about buyer's payment
+     * @param contract the contract that has been paid for
+     */
+    private void onPaymentMade(Contract contract) {
+        String sellerCountryCode = contract.getProduct().getSeller().getCountry().getCode();
+        executorService.submit(() -> {
+            GeneralMessage<?> response = webhookService.onPaymentMadeForContract(contract.getInnerId(), sellerCountryCode);
+            if (response != null && response.getStatus() == Status.success) {
+                contract.setDeliveryDate(new Date());
+                this.contractRepository.save(contract);
+            }
+        });
+    }
+
+    @PreDestroy
+    private void destroyExecutors() {
+        executorService.shutdown();
     }
 }
