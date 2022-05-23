@@ -1,8 +1,8 @@
 package ru.itis.stockmarket.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import ru.itis.stockmarket.models.Bank;
+import ru.itis.stockmarket.models.Country;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -18,4 +18,6 @@ import java.util.UUID;
  * Desc:
  */
 public interface BankRepository extends JpaRepository<Bank, UUID> {
+    boolean existsBankByCountry(Country country);
+    Optional<Bank> findBankByCountry_Code(String code);
 }

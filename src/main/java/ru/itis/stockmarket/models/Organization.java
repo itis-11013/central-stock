@@ -29,6 +29,9 @@ public class Organization {
     @OneToMany(mappedBy = "seller", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Collection<Product> products;
 
+    @OneToMany(mappedBy = "buyer")
+    private Collection<Contract> contracts;
+
     @ManyToOne
     @JoinColumn(name = "country_id")
     private Country country;

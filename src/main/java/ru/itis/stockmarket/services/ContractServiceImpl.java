@@ -1,8 +1,9 @@
 package ru.itis.stockmarket.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.itis.stockmarket.dtos.ContractRequestDto;
 import ru.itis.stockmarket.dtos.ContractResponseDto;
 import ru.itis.stockmarket.exceptions.CustomServerErrorException;
@@ -15,8 +16,12 @@ import ru.itis.stockmarket.repositories.ContractRepository;
 import ru.itis.stockmarket.repositories.OrganizationRepository;
 import ru.itis.stockmarket.repositories.ProductRepository;
 
+import javax.annotation.PreDestroy;
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by IntelliJ IDEA
@@ -29,22 +34,17 @@ import java.util.UUID;
  * Desc:
  */
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class ContractServiceImpl implements ContractService {
     private final ContractRepository contractRepository;
     private final ProductRepository productRepository;
     private final OrganizationRepository organizationRepository;
     private final ContractMapper contractMapper;
+    private final WebhookService webhookService;
 
-    public ContractServiceImpl(ContractRepository contractRepository,
-                               ProductRepository productRepository,
-                               OrganizationRepository organizationRepository,
-                               ContractMapper contractMapper) {
-        this.contractRepository = contractRepository;
-        this.productRepository = productRepository;
-        this.organizationRepository = organizationRepository;
-        this.contractMapper = contractMapper;
-    }
+    // Instantiate an executor service
+    private final ExecutorService executor = Executors.newFixedThreadPool(4);
 
     @Override
     public ContractResponseDto findContractById(UUID id) {
@@ -66,12 +66,29 @@ public class ContractServiceImpl implements ContractService {
         if (product.getSeller().getInnerId().equals(buyer.getInnerId())) {
             throw new CustomServerErrorException(HttpStatus.FORBIDDEN, "Organization cannot buy a product from itself");
         }
+
+        /* freezes the amount buyer wants to buy or throw if he wants to buy more than seller has */
+        if (product.getCount() < dto.getCount()) {
+            throw new CustomServerErrorException(HttpStatus.BAD_REQUEST, String.format("Cannot buy more than %f from this seller", product.getCount()));
+        } else {
+            this.productRepository.freezeCountById(dto.getCount(), product.getInnerId());
+        }
         Contract contract = Contract.builder()
                 .buyer(buyer)
                 .count(dto.getCount())
                 .product(product)
                 .build();
-        return this.contractMapper.toDto(this.contractRepository.save(contract));
+
+        ContractResponseDto response = this.contractMapper.toDto(this.contractRepository.save(contract));
+
+        /* send response to seller's bank in another thread */
+        executor.submit(() -> {
+            webhookService.onCreateContract(response, product.getSeller().getCountry().getCode());
+            System.out.println("Finished running on " + Thread.currentThread().getName());
+        });
+
+        // immediately return the response in the main thread
+        return response;
     }
 
     @Override
@@ -79,7 +96,20 @@ public class ContractServiceImpl implements ContractService {
         // throws if not found or already soft deleted
         ContractResponseDto contract = this.findContractById(id);
 
+        // unfreeze the count on the product
+        Optional<Product> product =
+        this.productRepository
+                .findById(contract.getProductId());
+        product.ifPresent(value -> this.productRepository.unfreezeCountById(contract.getCount(), value.getInnerId()));
+
+        // soft delete the contract
         this.contractRepository.softDeleteById(contract.getContractId());
+    }
+
+    @PreDestroy
+    public void shutdownExecutors() {
+        // needed to avoid resource leak
+        executor.shutdown();
     }
 
 }

@@ -1,10 +1,9 @@
 package ru.itis.stockmarket.models;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -20,22 +19,23 @@ public class Contract {
     @GeneratedValue
     private UUID innerId;
 
-    @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime contractDate;
+    @Builder.Default
+    private Date contractDate = new Date();
 
-    private LocalDateTime paymentDate;
+    private Date paymentDate;
 
     private Date deliveryDate;
 
     @ManyToOne
     private Product product;
 
-    @OneToOne
+    @ManyToOne
     private Organization buyer;
 
     private double count;
 
+    @Builder.Default
     private boolean deleted = Boolean.FALSE;
 
 }
