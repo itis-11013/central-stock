@@ -22,6 +22,7 @@ import static ru.itis.stockmarket.repositories.ProductSpecifications.*;
 import static ru.itis.stockmarket.dtos.PagedResponse.*;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 
 @Service
@@ -87,5 +88,11 @@ public class ProductServiceImpl implements ProductService {
         return from(this.productRepository.findAll(specification, pageable)
                 .map(this.productMapper::toDto));
 
+    }
+
+    @Override
+    public PagedResponse<ProductResponseDto> getAllProducts(Pageable pageable) {
+        return from(this.productRepository.findAll(pageable)
+                .map(this.productMapper::toDto));
     }
 }

@@ -8,8 +8,11 @@ import ru.itis.stockmarket.dtos.ProductRequestDto;
 import ru.itis.stockmarket.dtos.ProductResponseDto;
 import ru.itis.stockmarket.models.Product;
 
+import java.util.List;
+
 
 public interface ProductService {
     ProductResponseDto createProduct(ProductRequestDto productDto);
     PagedResponse<ProductResponseDto> getProducts(ProductFilterDto dto);
+    PagedResponse<ProductResponseDto> getAllProducts(Pageable pageable);
 }
