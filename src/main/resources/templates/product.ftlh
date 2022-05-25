@@ -1,24 +1,17 @@
+<#import "components/navbar.ftlh" as navbar />
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="<@navbar.spring.url '/css/bootstrap.min.css'/>" rel="stylesheet">
     <title>Bank</title>
 </head>
 <body>
+<@navbar.navbar activeIndex=3 />
 <div>
-    <nav>
-        <div>
-            <a href="/central/admin/bank">Bank</a>
-            <a href="/central/admin/organization">Organization</a>
-            <a href="/central/admin/contract" >Contracts</a>
-            <a href="/central/admin/product" class="here">Product</a>
-        </div>
-    </nav>
-</div>
-<div>
-    <table>
+    <table class="table table-primary table-hover">
         <tr>
             <th>#ID</th>
             <th>Name</th>
@@ -40,15 +33,10 @@
     </table>
 </div>
 
-<div>
-    <#if pagedResponse.currentPage gt 1>
-        <button onclick="location.href='/central/admin/product?page=${pagedResponse.currentPage-1}'"> &lt; </button>
-    </#if>
+<div class="footer">
+    <button onclick="location.href='/central/admin/product?page=${pagedResponse.currentPage-1}'" class="btn btn-primary <#if pagedResponse.currentPage lte 1>disabled</#if>"> &lt; </button>
     <span>${pagedResponse.currentPage}</span>
-    <#if pagedResponse.currentPage < pagedResponse.totalPages>
-        <button onclick="location.href='/central/admin/product?page=${pagedResponse.currentPage+1}'"> &gt; </button>
-    </#if>
-
+    <button onclick="location.href='/central/admin/product?page=${pagedResponse.currentPage+1}'" class="btn btn-primary <#if pagedResponse.currentPage gte pagedResponse.totalPages>disabled</#if>"> &gt; </button>
 </div>
 </body>
 </html>
