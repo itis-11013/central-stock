@@ -11,42 +11,46 @@
 </head>
 <body>
 <@macros.navbar activeIndex=2 />
-<table class="table table-striped table-bordered">
-    <tr>
-        <th>Contract ID</th>
-        <th>Contract Buyer</th>
-        <th>Contract Created At</th>
-        <th>Contract Count</th>
-        <th>Paid?</th>
-        <th>Contract Payment Date</th>
-        <th>Product</th>
-    </tr>
-    <#list contracts.content as contract>
+<h2>Contracts</h2>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
         <tr>
-            <td>${contract.contractId}</td>
-            <td>${contract.buyer.name}</td>
-            <td>${contract.createdAt}</td>
-            <td>${contract.count}</td>
-            <td>
-                <#if contract.isPaid>
-                    <div class="green chip">
-                        YES
-                    </div>
-                <#else>
-                    <div class="red chip">
-                        NO
-                    </div>
-                </#if>
-                </div></td>
-            <td>${contract.paymentDate!}</td>
-            <td>${contract.productId}</td>
+            <th>Contract ID</th>
+            <th>Contract Buyer</th>
+            <th>Contract Created At</th>
+            <th>Contract Count</th>
+            <th>Paid?</th>
+            <th>Contract Payment Date</th>
+            <th>Product</th>
         </tr>
-    </#list>
-</table>
+        <#list contracts.content as contract>
+            <tr>
+                <td>${contract.contractId}</td>
+                <td>${contract.buyer.name}</td>
+                <td>${contract.createdAt}</td>
+                <td>${contract.count}</td>
+                <td>
+                    <#if contract.isPaid>
+                        <div class="green chip">
+                            YES
+                        </div>
+                    <#else>
+                        <div class="red chip">
+                            NO
+                        </div>
+                    </#if>
+                </td>
+                <td>${contract.paymentDate!}</td>
+                <td>${contract.productId}</td>
+            </tr>
+        </#list>
+    </table>
+</div>
 <nav>
     <ul class="pagination pagination-lg justify-content-end">
         <li class="page-item <#if contracts.currentPage <= 1>disabled</#if>">
-            <a class="page-link" href="<@macros.spring.url '/admin/contract?page=${contracts.currentPage-1}'/>" aria-label="Previous">
+            <a class="page-link" href="<@macros.spring.url '/admin/contract?page=${contracts.currentPage-1}'/>"
+               aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
                 <span class="sr-only">Previous</span>
             </a>
@@ -67,7 +71,8 @@
 
         </#list>
         <li class="page-item <#if contracts.currentPage gte contracts.totalPages>disabled</#if>">
-            <a class="page-link" href="<@macros.spring.url '/admin/contract?page=${contracts.currentPage+1}'/>" aria-label="Next">
+            <a class="page-link" href="<@macros.spring.url '/admin/contract?page=${contracts.currentPage+1}'/>"
+               aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span class="sr-only">Next</span>
             </a>

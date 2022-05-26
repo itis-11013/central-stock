@@ -11,7 +11,8 @@
 </head>
 <body>
     <@macros.navbar activeIndex=0 />
-    <div>
+    <h2>Banks</h2>
+    <div class="table-responsive">
         <table class="table table-primary table-hover">
             <tr>
             <th>#ID</th>

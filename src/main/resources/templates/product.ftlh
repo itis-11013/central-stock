@@ -15,7 +15,8 @@
         },
 </#list>])">
 <@macros.navbar activeIndex=3 />
-<div>
+<h2>Products</h2>
+<div class="table-responsive">
     <table class="table table-primary table-hover">
         <tr>
             <th>#ID</th>

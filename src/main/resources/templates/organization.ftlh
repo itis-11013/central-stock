@@ -10,7 +10,8 @@
 </head>
 <body>
 <@macros.navbar activeIndex=1 />
-<div>
+<h2>Organizations</h2>
+<div class="table-responsive">
     <table class="table table-primary table-hover">
         <tr>
             <th>#ID</th>
