@@ -35,9 +35,7 @@ import static ru.itis.stockmarket.dtos.BankResponseDto.from;
 public class BankServiceImpl implements BankService {
 
     private final BankRepository bankRepository;
-
     private final BankMapper mapper;
-
     private final CountryRepository countryRepository;
 
     @Override

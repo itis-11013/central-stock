@@ -22,6 +22,8 @@ import static ru.itis.stockmarket.repositories.ProductSpecifications.*;
 import static ru.itis.stockmarket.dtos.PagedResponse.*;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -73,6 +75,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductResponseDto getProduct(UUID id) {
+        return this.productMapper.toDto(this.productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Product with id %s not found", id))));
+    }
+
+    @Override
     public PagedResponse<ProductResponseDto> getProducts(ProductFilterDto dto) {
         Pageable pageable = PageRequest.of(dto.getPage() - 1, dto.getSize()); // because page should be one-indexed
         Specification<Product> specification = hasAtLeastCount(dto.getCount()) // at least count of items
@@ -87,5 +95,11 @@ public class ProductServiceImpl implements ProductService {
         return from(this.productRepository.findAll(specification, pageable)
                 .map(this.productMapper::toDto));
 
+    }
+
+    @Override
+    public PagedResponse<ProductResponseDto> getAllProducts(Pageable pageable) {
+        return from(this.productRepository.findAll(pageable)
+                .map(this.productMapper::toDto));
     }
 }

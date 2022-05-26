@@ -1,16 +1,14 @@
 package ru.itis.stockmarket.controllers;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.stockmarket.dtos.*;
-import ru.itis.stockmarket.models.Product;
 import ru.itis.stockmarket.services.ProductService;
 
 import javax.validation.Valid;
-import java.util.List;
+import javax.websocket.server.PathParam;
+import java.util.UUID;
 
 @RestController
 public class ProductController {
@@ -34,6 +32,11 @@ public class ProductController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(controllerResponse);
+    }
+
+    @GetMapping("/product/{id}")
+    ResponseEntity<ProductResponseDto> getSingleProduct(@PathVariable UUID id) {
+        return ResponseEntity.ok(this.productService.getProduct(id));
     }
 
     @GetMapping("/productlist")

@@ -48,7 +48,7 @@ public class WebhookServiceImpl implements WebhookService {
             return response;
         } catch (RestClientException ex) {
             ex.printStackTrace();
-            log.error(String.format("Caught error(%s): ", url) + ex.getLocalizedMessage());
+            log.error(String.format("Caught error from (%s): %s", url, ex.getLocalizedMessage()));
             return null;
         }
     }

@@ -1,11 +1,13 @@
 package ru.itis.stockmarket.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.itis.stockmarket.dtos.ContractRequestDto;
 import ru.itis.stockmarket.dtos.ContractResponseDto;
+import ru.itis.stockmarket.dtos.PagedResponse;
 import ru.itis.stockmarket.exceptions.CustomServerErrorException;
 import ru.itis.stockmarket.exceptions.NotFoundException;
 import ru.itis.stockmarket.mappers.ContractMapper;
@@ -22,6 +24,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static ru.itis.stockmarket.dtos.PagedResponse.*;
 
 /**
  * Created by IntelliJ IDEA
@@ -52,6 +56,12 @@ public class ContractServiceImpl implements ContractService {
                 .softFindById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Contract with id %s not found", id)));
         return this.contractMapper.toDto(contract);
+    }
+
+    @Override
+    public PagedResponse<ContractResponseDto> getAllContracts(Pageable pageable) {
+        return from(this.contractRepository.findAll(pageable)
+                .map(contractMapper::toDto));
     }
 
     @Override

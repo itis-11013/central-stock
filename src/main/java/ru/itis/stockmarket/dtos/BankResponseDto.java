@@ -2,12 +2,15 @@ package ru.itis.stockmarket.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import ru.itis.stockmarket.models.Account;
 import ru.itis.stockmarket.models.Bank;
 import ru.itis.stockmarket.models.Country;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -31,6 +34,7 @@ public class BankResponseDto {
     private String address;
     @JsonProperty(value = "country_code")
     private String countryCode;
+    private Map<String,Double> accounts;
 
     public static BankResponseDto from(Bank bank) {
         return BankResponseDto.builder()
@@ -40,8 +44,10 @@ public class BankResponseDto {
                 .countryCode(
                         Optional.ofNullable(bank.getCountry())
                                 .map(Country::getCode)
-                                .orElse(null)
-                )
+                                .orElse(null))
+                .accounts(bank.getAccounts()
+                        .stream()
+                        .collect(Collectors.toMap(acc -> acc.getCountry().getCode(),Account::getBalance)))
                 .build();
     }
 
