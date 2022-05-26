@@ -28,3 +28,8 @@
         </div>
     </nav>
 </#macro>
+
+<#macro header>
+    <link href="<@spring.url '/css/bootstrap.min.css'/>" rel="stylesheet">
+    <link href="<@spring.url '/css/styles.css' />" rel="stylesheet">
+</#macro>

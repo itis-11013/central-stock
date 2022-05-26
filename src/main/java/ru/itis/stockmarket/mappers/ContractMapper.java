@@ -7,6 +7,8 @@ import ru.itis.stockmarket.dtos.OrganizationResponseDto;
 import ru.itis.stockmarket.models.Contract;
 import ru.itis.stockmarket.models.Organization;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA
  * Date: 17.05.2022

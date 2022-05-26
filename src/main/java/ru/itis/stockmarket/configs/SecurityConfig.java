@@ -44,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
                 .formLogin()
+                .defaultSuccessUrl("/admin/bank")
                 .and()
                 .rememberMe();
     }

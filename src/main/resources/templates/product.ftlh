@@ -1,15 +1,20 @@
-<#import "components/navbar.ftlh" as navbar />
+<#import "components/macros.ftlh" as macros />
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="<@navbar.spring.url '/css/bootstrap.min.css'/>" rel="stylesheet">
+    <@macros.header />
     <title>Bank</title>
 </head>
-<body>
-<@navbar.navbar activeIndex=3 />
+<body onload="fetchProductUnits([<#list pagedResponse.content as content>
+        {
+        innerId: '${content.innerId}',
+        unit: ${content.unit}
+        },
+</#list>])">
+<@macros.navbar activeIndex=3 />
 <div>
     <table class="table table-primary table-hover">
         <tr>
@@ -21,11 +26,14 @@
             <th>Product Catalog Code</th>
         </tr>
         <#list pagedResponse.content as product>
-            <tr>
+            <tr id="${product.innerId}">
                 <td>${product.innerId}</td>
                 <td>${product.name}</td>
                 <td>${product.price}</td>
-                <td>${product.count} ${product.unit} left</td>
+                <td>
+                    <span>${product.count}</span>
+                    <span class="unit"></span> <span>left</span>
+                </td>
                 <td>${product.sellerId}</td>
                 <td>${product.code}</td>
             </tr>
@@ -34,9 +42,13 @@
 </div>
 
 <div class="footer">
-    <button onclick="location.href='/central/admin/product?page=${pagedResponse.currentPage-1}'" class="btn btn-primary <#if pagedResponse.currentPage lte 1>disabled</#if>"> &lt; </button>
+
+    <a href="<@macros.spring.url '/admin/product?page=${pagedResponse.currentPage-1}'/>"
+       class="btn btn-primary <#if pagedResponse.currentPage lte 1>disabled</#if>"> &lt; </a>
     <span>${pagedResponse.currentPage}</span>
-    <button onclick="location.href='/central/admin/product?page=${pagedResponse.currentPage+1}'" class="btn btn-primary <#if pagedResponse.currentPage gte pagedResponse.totalPages>disabled</#if>"> &gt; </button>
+    <a href="<@macros.spring.url '/admin/product?page=${pagedResponse.currentPage+1}'/>"
+       class="btn btn-primary <#if pagedResponse.currentPage gte pagedResponse.totalPages>disabled</#if>"> &gt; </a>
 </div>
+<script src="<@macros.spring.url '/js/product.js' />"></script>
 </body>
 </html>
