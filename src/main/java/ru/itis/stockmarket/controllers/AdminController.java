@@ -34,6 +34,7 @@ public class AdminController {
     private final ProductService productService;
     private final OrganizationService<OrganizationRequestDto, OrganizationResponseDto> organizationService;
     private final ContractService contractService;
+
     @GetMapping("/bank")
     String getBanks(ModelMap model) {
         List<BankResponseDto> response = bankService.getAllOrganizations();
@@ -66,5 +67,10 @@ public class AdminController {
         PagedResponse<ContractResponseDto> response = this.contractService.getAllContracts(pageable);
         model.addAttribute("contracts", response);
         return "contract";
+    }
+
+    @GetMapping("/*")
+    String defaultAdminPage() {
+        return "redirect:/admin/bank";
     }
 }

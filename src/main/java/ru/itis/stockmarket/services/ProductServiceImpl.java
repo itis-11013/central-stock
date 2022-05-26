@@ -23,6 +23,7 @@ import static ru.itis.stockmarket.dtos.PagedResponse.*;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -71,6 +72,12 @@ public class ProductServiceImpl implements ProductService {
         productMapper.fromDto(productDto, product);
         productRepository.save(product);
         return productMapper.toDto(product);
+    }
+
+    @Override
+    public ProductResponseDto getProduct(UUID id) {
+        return this.productMapper.toDto(this.productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Product with id %s not found", id))));
     }
 
     @Override

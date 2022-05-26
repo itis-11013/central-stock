@@ -37,7 +37,6 @@ interface ProductInterface {
 }
 
 function fetchProductUnits(products: ProductInterface[]): void {
-  console.log(products)
   for (const product of products) {
     const unitName = units[product.unit];
     const unitParagraphNode = document.getElementById(product.innerId).getElementsByClassName("unit")[0]

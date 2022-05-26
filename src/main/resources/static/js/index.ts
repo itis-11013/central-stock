@@ -8,8 +8,10 @@ function toggleShow(el: HTMLElement) {
     if (display.trim().length === 0) {
         // show
         tr.style.display = 'table-row'
+        el.getElementsByClassName('btn')[0].innerHTML = '&uparrow;';
     } else {
         // hide
         tr.style.removeProperty('display')
+        el.getElementsByClassName('btn')[0].innerHTML = '&downarrow;'
     }
 }

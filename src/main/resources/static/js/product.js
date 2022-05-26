@@ -31,7 +31,6 @@ var units = {
     214: "КИЛОВАТТ"
 };
 function fetchProductUnits(products) {
-    console.log(products);
     for (var _i = 0, products_1 = products; _i < products_1.length; _i++) {
         var product = products_1[_i];
         var unitName = units[product.unit];

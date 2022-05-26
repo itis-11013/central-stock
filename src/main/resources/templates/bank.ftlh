@@ -32,7 +32,24 @@
                     <td>${singleBank.countryCode}</td>
                 </tr>
                 <tr class="hidden-details">
-                    <td colspan="5">My Hidden Details</td>
+                    <td colspan="5">
+                        <table class="table table-striped table-info w-25">
+<#--                            <tr>-->
+<#--                                <th>Account Country</th>-->
+<#--                                <th>Account Balance</th>-->
+<#--                            </tr>-->
+                            <#if singleBank.accounts?keys?size == 0>
+                                <div class="alert alert-info" role="alert">List of accounts is empty</div>
+                            <#else>
+                                <#list singleBank.accounts as accountCountry, accountBalance>
+                                    <tr>
+                                        <td>${accountCountry}</td>
+                                        <td><span class="text-black-50">${accountBalance}</span></td>
+                                    </tr>
+                                </#list>
+                            </#if>
+                        </table>
+                    </td>
                 </tr>
             </#list>
         </table>
