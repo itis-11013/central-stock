@@ -16,3 +16,7 @@
 .green {
     background-color: green;
 }
+
+.hidden-details {
+    display: none
+}

@@ -21,6 +21,7 @@
             </tr>
             <#list list as singleBank>
                 <tr>
+                    <td onclick="toggleShow(this)"></td>
                     <td>${singleBank.innerId}</td>
                     <td>${singleBank.name}</td>
                     <td>${singleBank.address}</td>

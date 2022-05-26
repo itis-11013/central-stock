@@ -32,4 +32,5 @@
 <#macro header>
     <link href="<@spring.url '/css/bootstrap.min.css'/>" rel="stylesheet">
     <link href="<@spring.url '/css/styles.css' />" rel="stylesheet">
+    <script src="<@spring.url '/js/index.js' />"></script>
 </#macro>
