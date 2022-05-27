@@ -55,7 +55,7 @@
                 <span class="sr-only">Previous</span>
             </a>
         </li>
-        <#list 1..contracts.totalPages as i>
+        <#list 1..[1,contracts.totalPages]?max as i>
             <#if i == contracts.currentPage>
                 <li class="page-item active">
                     <span class="page-link">
@@ -67,8 +67,6 @@
                     <a class="page-link" href="<@macros.spring.url '/admin/contract?page=${i}'/>">${i}</a>
                 </li>
             </#if>
-
-
         </#list>
         <li class="page-item <#if contracts.currentPage gte contracts.totalPages>disabled</#if>">
             <a class="page-link" href="<@macros.spring.url '/admin/contract?page=${contracts.currentPage+1}'/>"
