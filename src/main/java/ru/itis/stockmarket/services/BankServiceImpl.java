@@ -10,12 +10,12 @@ import ru.itis.stockmarket.mappers.BankMapper;
 import ru.itis.stockmarket.models.Account;
 import ru.itis.stockmarket.models.Bank;
 import ru.itis.stockmarket.models.Country;
+import ru.itis.stockmarket.repositories.AccountRepository;
 import ru.itis.stockmarket.repositories.BankRepository;
 import ru.itis.stockmarket.repositories.CountryRepository;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static ru.itis.stockmarket.dtos.BankResponseDto.from;
 
@@ -37,6 +37,7 @@ public class BankServiceImpl implements BankService {
     private final BankRepository bankRepository;
     private final BankMapper mapper;
     private final CountryRepository countryRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     public BankResponseDto createOrganization(BankRequestDto bankDto) {
@@ -56,8 +57,7 @@ public class BankServiceImpl implements BankService {
                 .country(country)
                 .build();
         // by default add 100 million to each bank accounts
-        addDefaultBankAccounts(bank,"ru", "co");
-        this.bankRepository.save(bank);
+        addDefaultBankAccounts(bank);
         return from(bank);
     }
 
@@ -111,15 +111,33 @@ public class BankServiceImpl implements BankService {
     }
 
 
-    private void addDefaultBankAccounts(Bank bank, String... countries) {
-        List<Account> accounts = Arrays.stream(countries).map(countryCode -> {
-            Country _country = this.findCountryByCodeOrCreate(countryCode);
-            return Account.builder()
-                    .balance(100_000_000)
-                    .country(_country)
-                    .bank(bank)
-                    .build();
-        }).collect(Collectors.toList());
-        bank.setAccounts(accounts);
+    private void addDefaultBankAccounts(Bank bank) {
+        // add my country account to other banks and add their account to my bank
+        List<Bank> oldBanks = this.bankRepository.findAll();
+        this.bankRepository.save(bank); // save bank first else there will be an error
+        for (Bank eachOldBank: oldBanks) {
+            Account newBankAccount = makeNewAccount(eachOldBank,bank.getCountry());
+            Account oldBankAccount = makeNewAccount(bank,eachOldBank.getCountry());
+
+            this.accountRepository.save(oldBankAccount);
+            this.accountRepository.save(newBankAccount);
+        }
+        // add my own account
+        Account myAccount = makeNewAccount(bank, bank.getCountry());
+        this.accountRepository.save(myAccount);
+    }
+
+    /**
+     * Builds an account object with a default of 100 million
+     * @param bank account owner
+     * @param country currency country
+     * @return new Account for this bank with the account of country
+     */
+    private Account makeNewAccount(Bank bank, Country country) {
+        return Account.builder()
+                .country(country)
+                .bank(bank)
+                .balance(100_000_000)
+                .build();
     }
 }

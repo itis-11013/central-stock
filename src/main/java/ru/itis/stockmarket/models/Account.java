@@ -20,18 +20,20 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "bank_account")
+@Table(name = "bank_account", uniqueConstraints = {@UniqueConstraint(columnNames = {"bank_id", "country_id"})})
 public class Account {
     @Id
     @GeneratedValue
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "country_id")
     private Country country;
 
     private double balance;
 
     @ManyToOne
+    @JoinColumn(name = "bank_id")
     private Bank bank;
 
 }

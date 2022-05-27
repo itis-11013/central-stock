@@ -33,6 +33,6 @@ public class Bank {
     @JoinColumn(name = "country_id", unique = true)
     private Country country;
 
-    @OneToMany(mappedBy = "bank", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "bank", cascade = CascadeType.PERSIST, orphanRemoval = true)
     Collection<Account> accounts;
 }

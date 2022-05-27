@@ -6,10 +6,7 @@ import ru.itis.stockmarket.models.Account;
 import ru.itis.stockmarket.models.Bank;
 import ru.itis.stockmarket.models.Country;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -45,7 +42,8 @@ public class BankResponseDto {
                         Optional.ofNullable(bank.getCountry())
                                 .map(Country::getCode)
                                 .orElse(null))
-                .accounts(bank.getAccounts()
+                .accounts(Optional.ofNullable(bank.getAccounts())
+                        .orElse(new ArrayList<>())
                         .stream()
                         .collect(Collectors.toMap(acc -> acc.getCountry().getCode(),Account::getBalance)))
                 .build();
