@@ -47,6 +47,7 @@ function getProducts(el, ids) {
                     if (hiddenRow.style.display.length !== 0) {
                         // simply close by calling dependent function
                         button.disabled = false;
+                        // @ts-ignore
                         toggleShow(el);
                         return [2 /*return*/, null];
                     }
@@ -78,6 +79,7 @@ function getProducts(el, ids) {
                     insertItems(table, jsonResult);
                     // hide loading spinner
                     button.disabled = false;
+                    // @ts-ignore
                     toggleShow(el);
                     return [2 /*return*/];
             }
@@ -109,5 +111,6 @@ function insertItems(table, items) {
         var cell5 = row.insertCell(-1);
         cell5.innerHTML = req.count + " <span class=\"unit\"></span> left";
     }
+    // @ts-ignore
     fetchProductUnits(items.map(function (it) { return ({ innerId: it.productid, unit: it.unit }); }));
 }

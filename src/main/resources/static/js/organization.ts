@@ -20,6 +20,7 @@ Loading...`;
     if (hiddenRow.style.display.length !== 0) {
         // simply close by calling dependent function
         button.disabled = false;
+        // @ts-ignore
         toggleShow(el);
         return null;
     }
@@ -42,6 +43,7 @@ Loading...`;
 
     // hide loading spinner
     button.disabled = false;
+    // @ts-ignore
     toggleShow(el);
 }
 
@@ -69,5 +71,6 @@ function insertItems(table: HTMLTableElement, items: ProductInterface[]) {
         const cell5 = row.insertCell(-1);
         cell5.innerHTML = `${req.count} <span class="unit"></span> left`
     }
+    // @ts-ignore
     fetchProductUnits(items.map(it => ({innerId: it.productid, unit: it.unit})))
 }

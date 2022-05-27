@@ -41,7 +41,7 @@ public class ProductController {
 
     @GetMapping("/productlist")
     GeneralMessage<PagedResponse<ProductResponseDto>> getProductList(
-            @RequestParam String code,
+            @RequestParam(required = false) String code,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") double count,

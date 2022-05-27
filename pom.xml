@@ -10,7 +10,7 @@
     </parent>
     <groupId>ru.itis</groupId>
     <artifactId>stock-market</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2</version>
     <name>stock-market</name>
     <description>stock-market</description>
     <properties>

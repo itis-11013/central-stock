@@ -22,7 +22,6 @@ import static ru.itis.stockmarket.repositories.ProductSpecifications.*;
 import static ru.itis.stockmarket.dtos.PagedResponse.*;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -83,11 +82,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PagedResponse<ProductResponseDto> getProducts(ProductFilterDto dto) {
         Pageable pageable = PageRequest.of(dto.getPage() - 1, dto.getSize()); // because page should be one-indexed
-        Specification<Product> specification = hasAtLeastCount(dto.getCount()) // at least count of items
-                .and(Specification
-                        .where(catalogCodeEquals(dto.getCode()) // strict equality first
-                                .or(catalogCodeLike(dto.getCode())) // weak equality second
-                        ));
+        Specification<Product> specification = hasAtLeastCount(dto.getCount()); // at least count of items
+        if (dto.getCode() != null) {
+            specification = specification.and(Specification
+                    .where(catalogCodeEquals(dto.getCode()) // strict equality first
+                            .or(catalogCodeLike(dto.getCode())) // weak equality second
+                    ));
+        }
         /* if country is provided sort by country */
         if (dto.getCountry() != null) {
             specification = specification.and(hasCountryCode(dto.getCountry()));
