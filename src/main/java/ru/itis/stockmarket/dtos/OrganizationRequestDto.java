@@ -30,7 +30,5 @@ public class OrganizationRequestDto {
     @Size(min = 2, max = 2, message = "Length of country should be 2, country code as specified by ISO-3166-1")
     @JsonDeserialize(converter = ToLowerCaseConverter.class)
     private String country;
-
-    private String url;
 }
 

@@ -6,8 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <@macros.header />
-    <script src="<@macros.spring.url '/js/product.js' />"></script>
-    <script src="<@macros.spring.url '/js/organization.js' />"></script>
     <title>Bank</title>
 </head>
 <body>

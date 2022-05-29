@@ -1,9 +1,11 @@
 package ru.itis.stockmarket.services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -11,6 +13,7 @@ import ru.itis.stockmarket.dtos.ContractResponseDto;
 import ru.itis.stockmarket.dtos.GeneralMessage;
 import ru.itis.stockmarket.dtos.PaymentRequestDto;
 import ru.itis.stockmarket.dtos.Status;
+import ru.itis.stockmarket.exceptions.WebhookClientException;
 
 import java.util.UUID;
 
@@ -38,22 +41,29 @@ public class WebhookServiceImpl implements WebhookService {
     }
 
     @Override
+    @Retryable(
+            value = WebhookClientException.class,
+            maxAttempts = 10,
+            backoff = @Backoff(multiplier = 2, delay = 10000))
     public GeneralMessage<?> onCreateContract(ContractResponseDto contractDto, String sellerCountryCode) {
         String url = BASE_URL + "/" + sellerCountryCode + "/contract";
         try {
             log.info(String.format("onCreateContract for contract %s", contractDto.getContractId()));
             HttpEntity<ContractResponseDto> request = new HttpEntity<>(contractDto);
             GeneralMessage<?> response = restTemplate.postForObject(url, request, GeneralMessage.class);
-            logResponse("onCreateContract to " + url , response);
+            logResponse("onCreateContract to " + url, response);
             return response;
         } catch (RestClientException ex) {
-            ex.printStackTrace();
-            log.error(String.format("Caught error from (%s): %s", url, ex.getLocalizedMessage()));
-            return null;
+            log.warn("Retrying request " + ex.getLocalizedMessage());
+            throw new WebhookClientException("onCreateContract", ex);
         }
     }
 
     @Override
+    @Retryable(
+            value = WebhookClientException.class,
+            maxAttempts = 10,
+            backoff = @Backoff(multiplier = 2, delay = 10000))
     public GeneralMessage<?> onPaymentMadeForContract(UUID contractId, String sellerCountryCode) {
         try {
             log.info(String.format("onPaymentMadeForContract for contract %s", contractId));
@@ -66,10 +76,31 @@ public class WebhookServiceImpl implements WebhookService {
             logResponse("onPaymentMadeForContract", response);
             return response;
         } catch (RestClientException ex) {
-            ex.printStackTrace();
-            log.error("An error was caught onPaymentMadeForContract with: " + ex.getLocalizedMessage());
-            return null;
+            log.warn("Retrying request " + ex.getLocalizedMessage());
+            throw new WebhookClientException("onPaymentMadeForContract", ex);
         }
+    }
+
+    @Recover
+    public GeneralMessage<?> recover(WebhookClientException ex, ContractResponseDto contractDto, String sellerCountryCode) {
+        ex.printStackTrace();
+        log.error(String.format("Error thrown while sending new contract %s from country %s, method '%s' with description %s",
+                contractDto.getContractId(),
+                sellerCountryCode,
+                ex.getMethodName(),
+                ex.getLocalizedMessage()));
+        return null;
+    }
+
+    @Recover
+    public GeneralMessage<?> recover(WebhookClientException ex, UUID contractId, String sellerCountryCode) {
+        ex.printStackTrace();
+        log.error(String.format("Error thrown while paying for %s from Country %s, from method '%s' with description %s",
+                contractId,
+                sellerCountryCode,
+                ex.getMethodName(),
+                ex.getLocalizedMessage()));
+        return null;
     }
 
     private void logResponse(String methodName, GeneralMessage<?> response) {

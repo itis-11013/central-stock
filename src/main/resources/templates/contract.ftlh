@@ -15,6 +15,7 @@
 <div class="table-responsive">
     <table class="table table-striped table-bordered">
         <tr>
+            <th></th>
             <th>Contract ID</th>
             <th>Contract Buyer</th>
             <th>Contract Created At</th>
@@ -25,6 +26,9 @@
         </tr>
         <#list contracts.content as contract>
             <tr>
+                <td onclick="getProducts(this, ['${contract.productId}'])">
+                    <button class="btn btn-primary">&downarrow;</button>
+                </td>
                 <td>${contract.contractId}</td>
                 <td>${contract.buyer.name}</td>
                 <td>${contract.createdAt}</td>
@@ -42,6 +46,13 @@
                 </td>
                 <td>${contract.paymentDate!}</td>
                 <td>${contract.productId}</td>
+            </tr>
+            <tr class="hidden-details">
+                <td colspan="8">
+                    <h3>Products</h3>
+                    <table class="table table-striped table-info w-75">
+                    </table>
+                </td>
             </tr>
         </#list>
     </table>
