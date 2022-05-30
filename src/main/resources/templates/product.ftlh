@@ -16,6 +16,19 @@
 </#list>])">
 <@macros.navbar activeIndex=3 />
 <h2>Products</h2>
+<label for="country-select">Select a country to filter: </label>
+<div class="container d-flex flex-row my-4">
+    <select class="form-select mx-2" id="country-select">
+        <option value="" <#if country?? == false>selected</#if>>---</option>
+        <#list countries as count>
+            <option value="${count}" <#if (country!'') == count>selected</#if>>
+                ${count?upper_case}
+            </option>
+        </#list>
+    </select>
+    <button class="btn btn-primary mx-2"
+            onclick="const x = getSelectedCountry(); location.href = '/central/admin/product?country='+x;"> Filter </button>
+</div>
 <div class="table-responsive">
     <table class="table table-primary table-hover">
         <tr>

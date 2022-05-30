@@ -65,10 +65,19 @@ public class AdminController {
     @GetMapping("/product")
     String getProducts(ModelMap model,
                        @RequestParam(defaultValue = "1") int page,
-                       @RequestParam(defaultValue = "20") int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        PagedResponse<ProductResponseDto> response = productService.getAllProducts(pageable);
+                       @RequestParam(defaultValue = "20") int size,
+                       @RequestParam(required = false) String country) {
+        PagedResponse<ProductResponseDto> response;
+        if (country != null) {
+            ProductFilterDto filter = ProductFilterDto.builder().country(country).page(page).size(size).build();
+            response = productService.getProducts(filter);
+        } else {
+            Pageable pageable = PageRequest.of(page - 1, size);
+            response = productService.getAllProducts(pageable);
+        }
         model.addAttribute("pagedResponse", response);
+        model.addAttribute("country", country);
+        model.addAttribute("countries", countryService.getAllCountryCodes());
         return "product";
     }
 

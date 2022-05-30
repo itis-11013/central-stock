@@ -83,6 +83,7 @@ function insertProductItems(table: HTMLTableElement, items: ProductInterface[]) 
     fetchProductUnits(items.map(it => ({innerId: it.productid, unit: it.unit})))
 }
 
+// @ts-ignore
 async function getOrganizationFrom(country: string) {
     console.log('Country clicked')
     if (country != null) {

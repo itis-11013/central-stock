@@ -15,3 +15,14 @@ function toggleShow(el: HTMLElement) {
         el.getElementsByClassName('btn')[0].innerHTML = '&downarrow;'
     }
 }
+
+/**
+ * picks select of "country-select" and returns the value of the selected index
+ */
+function getSelectedCountry(): string {
+    const select = <HTMLSelectElement> document.getElementById("country-select");
+    const option = select.options[select.selectedIndex]
+    if (option.value != null && option.value !== "") {
+        return option.value;
+    }
+}

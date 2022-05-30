@@ -16,3 +16,13 @@ function toggleShow(el) {
         el.getElementsByClassName('btn')[0].innerHTML = '&downarrow;';
     }
 }
+/**
+ * picks select of "country-select" and returns the value of the selected index
+ */
+function getSelectedCountry() {
+    var select = document.getElementById("country-select");
+    var option = select.options[select.selectedIndex];
+    if (option.value != null && option.value !== "") {
+        return option.value;
+    }
+}

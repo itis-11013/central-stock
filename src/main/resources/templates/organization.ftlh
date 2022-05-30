@@ -12,41 +12,17 @@
 <@macros.navbar activeIndex=1 />
 <h2>Organizations</h2>
 <label for="country-select">Select a country to filter: </label>
-<script>
-    selectHandler = {
-        clickCount : 0,
-        action : function(select)
-        {
-            selectHandler.clickCount++;
-            let selectedValue;
-            if (selectHandler.clickCount % 2 === 0) {
-                selectedValue = select.options[select.selectedIndex].value;
-                selectHandler.check(selectedValue);
-            }
-        },
-        blur : function() // needed for proper behaviour
-        {
-            if(selectHandler.clickCount%2 !== 0)
-            {
-                selectHandler.clickCount--;
-            }
-        },
-        check : function(value)
-        {
-            console.log('check here and value is ', value)
-            if (value != null) getOrganizationFrom(value);
-        }
-    }
-
-</script>
-<select class="form-select" id="country-select" onclick="selectHandler.action(this)">
-    <option value="" <#if country?? == false>selected</#if>>---</option>
-    <#list countries as count>
-        <option value="${count}" <#if (country!'') == count>selected</#if>>
-            ${count?upper_case}
-        </option>
-    </#list>
-</select>
+<div class="container d-flex flex-row my-4">
+    <select class="form-select mx-2" id="country-select">
+        <option value="" <#if country?? == false>selected</#if>>---</option>
+        <#list countries as count>
+            <option value="${count}" <#if (country!'') == count>selected</#if>>
+                ${count?upper_case}
+            </option>
+        </#list>
+    </select>
+    <button class="btn btn-primary mx-2" onclick="getOrganizationFrom(getSelectedCountry())"> Filter </button>
+</div>
 <div class="table-responsive">
     <table class="table table-primary table-hover" id="OrganizationTable">
         <tr>

@@ -114,6 +114,7 @@ function insertProductItems(table, items) {
     // @ts-ignore
     fetchProductUnits(items.map(function (it) { return ({ innerId: it.productid, unit: it.unit }); }));
 }
+// @ts-ignore
 function getOrganizationFrom(country) {
     return __awaiter(this, void 0, void 0, function () {
         var response, result;
