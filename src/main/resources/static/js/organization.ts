@@ -96,11 +96,16 @@ async function getOrganizationFrom(country: string) {
 function fillOrganizationTable(data: [OrganizationInterface]) {
     const table = <HTMLTableElement> document.getElementById("OrganizationTable");
     // remove old elements except the header
-    for(let i = 0; i < table.rows.length - 1; i++) {
-        table.deleteRow(-1);
+    while(table.rows.length != 0) {
         table.deleteRow(-1);
     }
-
+    // insert header
+    const header = table.insertRow(-1);
+    header.innerHTML = `<th></th>
+            <th>#ID</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Country Code</th>`;
     // insert new elements
     for (let i = 0; i < data.length; i++) {
         const cell = table.insertRow(-1);

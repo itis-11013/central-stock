@@ -139,10 +139,12 @@ function getOrganizationFrom(country) {
 function fillOrganizationTable(data) {
     var table = document.getElementById("OrganizationTable");
     // remove old elements except the header
-    for (var i = 0; i < table.rows.length - 1; i++) {
-        table.deleteRow(-1);
+    while (table.rows.length != 0) {
         table.deleteRow(-1);
     }
+    // insert header
+    var header = table.insertRow(-1);
+    header.innerHTML = "<th></th>\n            <th>#ID</th>\n            <th>Name</th>\n            <th>Address</th>\n            <th>Country Code</th>";
     // insert new elements
     for (var i = 0; i < data.length; i++) {
         var cell = table.insertRow(-1);
