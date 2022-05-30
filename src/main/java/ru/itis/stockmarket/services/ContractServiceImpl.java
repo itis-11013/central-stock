@@ -92,10 +92,12 @@ public class ContractServiceImpl implements ContractService {
         ContractResponseDto response = this.contractMapper.toDto(this.contractRepository.save(contract));
 
         /* send response to seller's bank in another thread */
-        executor.submit(() -> {
-            webhookService.onCreateContract(response, product.getSeller().getCountry().getCode());
-            System.out.println("Finished running on " + Thread.currentThread().getName());
-        });
+        if (product.getSeller().getCountry() != buyer.getCountry()) {
+            executor.submit(() -> {
+                webhookService.onCreateContract(response, product.getSeller().getCountry().getCode());
+                System.out.println("Finished running on " + Thread.currentThread().getName());
+            });
+        }
 
         // immediately return the response in the main thread
         return response;
