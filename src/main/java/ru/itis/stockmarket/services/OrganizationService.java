@@ -25,6 +25,8 @@ public interface OrganizationService<RequestDto, ResponseDto> {
 
     List<ResponseDto> getAllOrganizations();
 
+    List<ResponseDto> getOrganizationsFrom(String countryCode);
+
     UUID deleteOrganizationWithId(UUID id);
 
 }

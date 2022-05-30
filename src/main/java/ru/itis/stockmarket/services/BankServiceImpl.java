@@ -89,6 +89,13 @@ public class BankServiceImpl implements BankService {
     }
 
     @Override
+    public List<BankResponseDto> getOrganizationsFrom(String countryCode) {
+        ArrayList<Bank> banks = new ArrayList<>();
+        this.bankRepository.findBankByCountry_Code(countryCode).ifPresent(banks::add);
+        return from(banks);
+    }
+
+    @Override
     public UUID deleteOrganizationWithId(UUID id) {
         _getBankWithId(id); // throws if bank does not exist
         try {

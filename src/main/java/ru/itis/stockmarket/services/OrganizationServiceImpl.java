@@ -90,6 +90,13 @@ public class OrganizationServiceImpl implements OrganizationService<Organization
     }
 
     @Override
+    public List<OrganizationResponseDto> getOrganizationsFrom(String countryCode) {
+        return this.organizationMapper
+                .toDto(this.organizationRepository
+                        .findByCountry_Code(countryCode));
+    }
+
+    @Override
     public UUID deleteOrganizationWithId(UUID id) {
         Organization _org = _getOrgWithId(id);
         this.organizationRepository.delete(_org);

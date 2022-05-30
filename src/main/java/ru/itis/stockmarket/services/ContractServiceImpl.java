@@ -20,6 +20,7 @@ import ru.itis.stockmarket.repositories.ProductRepository;
 
 import javax.annotation.PreDestroy;
 import javax.transaction.Transactional;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -110,12 +111,26 @@ public class ContractServiceImpl implements ContractService {
 
         // unfreeze the count on the product
         Optional<Product> product =
-        this.productRepository
-                .findById(contract.getProductId());
-        product.ifPresent(value -> this.productRepository.unfreezeCountById(contract.getCount(), value.getInnerId()));
+                this.productRepository
+                        .findById(contract.getProductId());
 
         // soft delete the contract
         this.contractRepository.softDeleteById(contract.getContractId());
+
+        // unfreeze and notify
+        if (product.isPresent()) {
+            this.productRepository.unfreezeCountById(contract.getCount(), product.get().getInnerId());
+
+            // notify the seller
+            String sellerCountryCode = product.get().getSeller().getCountry().getCode();
+            String buyerCountryCode = contract.getBuyer().getCountryCode();
+            if (!sellerCountryCode.equals(buyerCountryCode)) {
+                // TODO: no method for notifying seller about delete
+                // executor.submit(() -> {
+                // webhookService.
+                //  });
+            }
+        }
     }
 
     @PreDestroy

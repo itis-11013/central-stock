@@ -7,6 +7,14 @@ interface ProductInterface {
     unit: number;
 }
 
+interface OrganizationInterface {
+    innerid: string;
+    name: string;
+    address: string;
+    country_code: string;
+    products: [string];
+}
+
 async function getProducts(el: HTMLElement, ids: string[]) {
     // check if button is open then close without calling fetch else call fetch
     const hiddenRow: HTMLElement = <HTMLElement>el.parentElement.nextElementSibling;
@@ -38,8 +46,8 @@ Loading...`;
         table.innerHTML = "";
     }
     const headers = ['#ID', 'Name', 'Code', 'Price', 'Count']
-    insertHeader(table, headers);
-    insertItems(table,jsonResult);
+    insertProductHeader(table, headers);
+    insertProductItems(table,jsonResult);
 
     // hide loading spinner
     button.disabled = false;
@@ -47,7 +55,7 @@ Loading...`;
     toggleShow(el);
 }
 
-function insertHeader(table: HTMLTableElement, headers: string[]) {
+function insertProductHeader(table: HTMLTableElement, headers: string[]) {
     const row = table.insertRow(-1);
     row.innerHTML = ''
     for (const head of headers) {
@@ -55,7 +63,7 @@ function insertHeader(table: HTMLTableElement, headers: string[]) {
     }
 }
 
-function insertItems(table: HTMLTableElement, items: ProductInterface[]) {
+function insertProductItems(table: HTMLTableElement, items: ProductInterface[]) {
     for (const req of items) {
         // append a new row
         const row = table.insertRow(-1);
@@ -73,4 +81,43 @@ function insertItems(table: HTMLTableElement, items: ProductInterface[]) {
     }
     // @ts-ignore
     fetchProductUnits(items.map(it => ({innerId: it.productid, unit: it.unit})))
+}
+
+async function getOrganizationFrom(country: string) {
+    console.log('Country clicked')
+    if (country != null) {
+        const response = await fetch(`/central/admin/organization-ajax?country=${country}`);
+        const result: [OrganizationInterface] = await response.json();
+        fillOrganizationTable(result);
+    }
+}
+
+function fillOrganizationTable(data: [OrganizationInterface]) {
+    const table = <HTMLTableElement> document.getElementById("OrganizationTable");
+    // remove old elements except the header
+    for(let i = 0; i < table.rows.length - 1; i++) {
+        table.deleteRow(-1);
+        table.deleteRow(-1);
+    }
+
+    // insert new elements
+    for (let i = 0; i < data.length; i++) {
+        const cell = table.insertRow(-1);
+        const products = '['+data[i].products.map(each => `'${each}'`).join(',')+']';
+        cell.innerHTML = `<td onclick="getProducts(this, ${products})">
+                    <button class="btn btn-primary">&downarrow;</button>
+                </td>
+                <td>${data[i].innerid}</td>
+                <td>${data[i].name}</td>
+                <td>${data[i].address}</td>
+                <td>${data[i].country_code}</td>`
+        // hidden cell
+        const hidden = table.insertRow(-1);
+        hidden.classList.add("hidden-details");
+        hidden.innerHTML = `<td colspan="5">
+                    <h3>Products</h3>
+                    <table class="table table-striped table-info w-75">
+                    </table>
+                </td>`
+    }
 }

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.itis.stockmarket.models.Country;
 import ru.itis.stockmarket.models.Organization;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,4 +20,5 @@ import java.util.UUID;
  */
 public interface OrganizationRepository extends JpaRepository<Organization, UUID> {
     Optional<Organization> findByAddressAndNameAndCountry(String address, String name, Country country);
+    List<Organization> findByCountry_Code(String code);
 }

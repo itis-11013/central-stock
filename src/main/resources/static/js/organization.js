@@ -75,8 +75,8 @@ function getProducts(el, ids) {
                         table.innerHTML = "";
                     }
                     headers = ['#ID', 'Name', 'Code', 'Price', 'Count'];
-                    insertHeader(table, headers);
-                    insertItems(table, jsonResult);
+                    insertProductHeader(table, headers);
+                    insertProductItems(table, jsonResult);
                     // hide loading spinner
                     button.disabled = false;
                     // @ts-ignore
@@ -86,7 +86,7 @@ function getProducts(el, ids) {
         });
     });
 }
-function insertHeader(table, headers) {
+function insertProductHeader(table, headers) {
     var row = table.insertRow(-1);
     row.innerHTML = '';
     for (var _i = 0, headers_1 = headers; _i < headers_1.length; _i++) {
@@ -94,7 +94,7 @@ function insertHeader(table, headers) {
         row.innerHTML += '<th>' + head + '</th>';
     }
 }
-function insertItems(table, items) {
+function insertProductItems(table, items) {
     for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
         var req = items_1[_i];
         // append a new row
@@ -113,4 +113,43 @@ function insertItems(table, items) {
     }
     // @ts-ignore
     fetchProductUnits(items.map(function (it) { return ({ innerId: it.productid, unit: it.unit }); }));
+}
+function getOrganizationFrom(country) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log('Country clicked');
+                    if (!(country != null)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, fetch("/central/admin/organization-ajax?country=" + country)];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    result = _a.sent();
+                    fillOrganizationTable(result);
+                    _a.label = 3;
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+function fillOrganizationTable(data) {
+    var table = document.getElementById("OrganizationTable");
+    // remove old elements except the header
+    for (var i = 0; i < table.rows.length - 1; i++) {
+        table.deleteRow(-1);
+        table.deleteRow(-1);
+    }
+    // insert new elements
+    for (var i = 0; i < data.length; i++) {
+        var cell = table.insertRow(-1);
+        var products = '[' + data[i].products.map(function (each) { return "'" + each + "'"; }).join(',') + ']';
+        cell.innerHTML = "<td onclick=\"getProducts(this, " + products + ")\">\n                    <button class=\"btn btn-primary\">&downarrow;</button>\n                </td>\n                <td>" + data[i].innerid + "</td>\n                <td>" + data[i].name + "</td>\n                <td>" + data[i].address + "</td>\n                <td>" + data[i].country_code + "</td>";
+        // hidden cell
+        var hidden = table.insertRow(-1);
+        hidden.classList.add("hidden-details");
+        hidden.innerHTML = "<td colspan=\"5\">\n                    <h3>Products</h3>\n                    <table class=\"table table-striped table-info w-75\">\n                    </table>\n                </td>";
+    }
 }

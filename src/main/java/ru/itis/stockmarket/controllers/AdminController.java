@@ -8,11 +8,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import ru.itis.stockmarket.dtos.*;
-import ru.itis.stockmarket.services.BankService;
-import ru.itis.stockmarket.services.ContractService;
-import ru.itis.stockmarket.services.OrganizationService;
-import ru.itis.stockmarket.services.ProductService;
+import ru.itis.stockmarket.services.*;
 
 import java.util.List;
 
@@ -34,6 +32,7 @@ public class AdminController {
     private final ProductService productService;
     private final OrganizationService<OrganizationRequestDto, OrganizationResponseDto> organizationService;
     private final ContractService contractService;
+    private final CountryService countryService;
 
     @GetMapping("/bank")
     String getBanks(ModelMap model) {
@@ -43,10 +42,24 @@ public class AdminController {
     }
 
     @GetMapping("/organization")
-    String getOrganizations(ModelMap model) {
-        List<OrganizationResponseDto> response = organizationService.getAllOrganizations();
+    String getOrganizations(ModelMap model,
+                            @RequestParam(required = false) String country) {
+        List<OrganizationResponseDto> response =
+                country == null
+                        ? organizationService.getAllOrganizations()
+                        : organizationService.getOrganizationsFrom(country);
         model.addAttribute("list", response);
+        model.addAttribute("country", country);
+        model.addAttribute("countries", countryService.getAllCountryCodes());
         return "organization";
+    }
+
+    @GetMapping("/organization-ajax")
+    @ResponseBody
+    List<OrganizationResponseDto> getOrganizationsAjax(@RequestParam(required = false) String country) {
+        return country == null
+                ? organizationService.getAllOrganizations()
+                : organizationService.getOrganizationsFrom(country);
     }
 
     @GetMapping("/product")
