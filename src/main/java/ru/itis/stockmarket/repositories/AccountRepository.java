@@ -2,6 +2,10 @@ package ru.itis.stockmarket.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.itis.stockmarket.models.Account;
+import ru.itis.stockmarket.models.Bank;
+import ru.itis.stockmarket.models.Country;
+
+import java.util.Optional;
 
 /**
  * Created by IntelliJ IDEA
@@ -15,5 +19,6 @@ import ru.itis.stockmarket.models.Account;
  */
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
+    Optional<Account> findByBankAndCountry(Bank bank, Country currency);
 
 }

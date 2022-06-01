@@ -141,10 +141,11 @@ public class BankServiceImpl implements BankService {
      * @return new Account for this bank with the account of country
      */
     private Account makeNewAccount(Bank bank, Country country) {
-        return Account.builder()
+        Optional<Account> optionalAccount = this.accountRepository.findByBankAndCountry(bank,country);
+        return optionalAccount.orElseGet(() -> Account.builder()
                 .country(country)
                 .bank(bank)
                 .balance(100_000_000)
-                .build();
+                .build());
     }
 }
